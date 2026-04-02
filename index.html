@@ -1,475 +1,211 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liveuamap News Feed</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Liveuamap Tactical Feed</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --bg: #0d0e0f;
-    --surface: #141516;
-    --surface2: #1c1e1f;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #e8e6e1;
-    --muted: #7a7872;
-    --accent: #c8a96e;
-    --ukraine: #4a90d9;
-    --ukraine-bg: rgba(74,144,217,0.1);
-    --russia: #d95a4a;
-    --russia-bg: rgba(217,90,74,0.1);
-    --mideast: #d9a44a;
-    --mideast-bg: rgba(217,164,74,0.1);
-    --world: #6ab87a;
-    --world-bg: rgba(106,184,122,0.1);
-    --font-mono: 'IBM Plex Mono', monospace;
-    --font-sans: 'IBM Plex Sans', sans-serif;
-    --radius: 4px;
-  }
+body{
+    margin:0;
+    font-family:'Rajdhani',sans-serif;
+    background:#020606;
+    color:#ffffff;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* HEADER */
+.header{
+    text-align:center;
+    padding:20px;
+    border-bottom:1px solid #00ffc3;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-sans);
-    font-size: 14px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
+.header h1{
+    margin:0;
+    color:#00ffc3;
+    font-size:22px;
+}
 
-  .widget {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 0;
-    border: 1px solid var(--border2);
-    background: var(--surface);
-    border-radius: 6px;
-    overflow: hidden;
-  }
+.header p{
+    margin-top:5px;
+    font-size:13px;
+    opacity:0.7;
+}
 
-  /* Header */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
+/* CONTROLS */
+.controls{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:15px;
+}
 
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+select, button{
+    background:#061018;
+    color:#00ffc3;
+    border:1px solid #00ffc3;
+    padding:8px 12px;
+    cursor:pointer;
+    font-family:'Rajdhani',sans-serif;
+}
 
-  .live-indicator {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
+button:hover{
+    background:#00ffc3;
+    color:#000;
+}
 
-  .live-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: blink 2s ease-in-out infinite;
-  }
+/* STATUS */
+.status{
+    text-align:center;
+    font-size:12px;
+    opacity:0.7;
+    margin-bottom:10px;
+}
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(200,169,110,0.4); }
-    50% { opacity: 0.5; box-shadow: 0 0 0 4px rgba(200,169,110,0); }
-  }
+/* FEED */
+.feed{
+    max-width:900px;
+    margin:auto;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
 
-  .header-title {
-    font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--text);
-    letter-spacing: 0.04em;
-  }
+/* ITEM */
+.item{
+    background:#020606;
+    padding:12px;
+    font-size:14px;
+    border-left:3px solid #00ffc3;
+}
 
-  .header-title span {
-    color: var(--muted);
-  }
+.title{
+    font-weight:bold;
+    color:#00ffc3;
+}
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
+.meta{
+    font-size:12px;
+    opacity:0.6;
+    margin:6px 0;
+}
 
-  .timestamp {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-  }
+a{
+    color:#00aaff;
+    font-size:12px;
+    text-decoration:none;
+}
 
-  .refresh-btn {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent);
-    background: transparent;
-    border: 1px solid rgba(200,169,110,0.3);
-    border-radius: var(--radius);
-    padding: 4px 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .refresh-btn:hover {
-    background: rgba(200,169,110,0.08);
-    border-color: rgba(200,169,110,0.6);
-  }
-
-  .refresh-btn:disabled {
-    opacity: 0.4;
-    cursor: default;
-  }
-
-  .refresh-icon {
-    display: inline-block;
-    transition: transform 0.5s;
-  }
-
-  .refresh-btn.spinning .refresh-icon {
-    animation: spin 0.7s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Filters */
-  .filters {
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-
-  .filters::-webkit-scrollbar { display: none; }
-
-  .filter-btn {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--muted);
-    background: transparent;
-    border: none;
-    border-right: 1px solid var(--border);
-    padding: 10px 16px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s;
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .filter-btn:last-child { border-right: none; }
-
-  .filter-btn::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: transparent;
-    transition: background 0.15s;
-  }
-
-  .filter-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-
-  .filter-btn.active { color: var(--text); }
-  .filter-btn.active::after { background: var(--accent); }
-
-  .filter-btn[data-filter="ukraine"].active::after { background: var(--ukraine); }
-  .filter-btn[data-filter="russia"].active::after { background: var(--russia); }
-  .filter-btn[data-filter="middle-east"].active::after { background: var(--mideast); }
-  .filter-btn[data-filter="world"].active::after { background: var(--world); }
-
-  .count-badge {
-    font-size: 9px;
-    background: var(--surface2);
-    color: var(--muted);
-    padding: 1px 5px;
-    border-radius: 10px;
-    min-width: 18px;
-    text-align: center;
-  }
-
-  /* Feed */
-  .feed {
-    max-height: 520px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border2) transparent;
-  }
-
-  .feed::-webkit-scrollbar { width: 4px; }
-  .feed::-webkit-scrollbar-track { background: transparent; }
-  .feed::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-  .item {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-    animation: fadeIn 0.3s ease;
-  }
-
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-
-  .item:last-child { border-bottom: none; }
-  .item:hover { background: rgba(255,255,255,0.02); }
-
-  .item-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-    flex-wrap: wrap;
-  }
-
-  .tag {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 2px;
-    font-weight: 500;
-  }
-
-  .tag-ukraine { background: var(--ukraine-bg); color: var(--ukraine); border: 1px solid rgba(74,144,217,0.2); }
-  .tag-russia { background: var(--russia-bg); color: var(--russia); border: 1px solid rgba(217,90,74,0.2); }
-  .tag-middle-east { background: var(--mideast-bg); color: var(--mideast); border: 1px solid rgba(217,164,74,0.2); }
-  .tag-world { background: var(--world-bg); color: var(--world); border: 1px solid rgba(106,184,122,0.2); }
-
-  .item-loc {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.03em;
-  }
-
-  .item-loc::before { content: '◎ '; font-size: 8px; }
-
-  .item-time {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    margin-left: auto;
-    letter-spacing: 0.03em;
-  }
-
-  .item-text {
-    font-size: 13.5px;
-    font-weight: 300;
-    color: var(--text);
-    line-height: 1.6;
-  }
-
-  /* Loading / empty states */
-  .state-msg {
-    padding: 3rem 2rem;
-    text-align: center;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  /* Footer */
-  .footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 18px;
-    border-top: 1px solid var(--border);
-    background: var(--surface2);
-  }
-
-  .footer-source {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  .footer-source:hover { color: var(--accent); }
-
-  .footer-count {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-  }
+a:hover{
+    text-decoration:underline;
+}
 </style>
+
 </head>
+
 <body>
 
-<div class="widget">
-  <div class="header">
-    <div class="header-left">
-      <div class="live-indicator">
-        <div class="live-dot"></div>
-        Live
-      </div>
-      <div class="header-title">LIVEUAMAP <span>/ Conflict Feed</span></div>
-    </div>
-    <div class="header-right">
-      <span class="timestamp" id="ts">—</span>
-      <button class="refresh-btn" id="refresh-btn" onclick="refresh()">
-        <span class="refresh-icon">↻</span> Refresh
-      </button>
-    </div>
-  </div>
-
-  <div class="filters">
-    <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">
-      All <span class="count-badge" id="c-all">0</span>
-    </button>
-    <button class="filter-btn" data-filter="ukraine" onclick="setFilter('ukraine',this)">
-      Ukraine <span class="count-badge" id="c-ukraine">0</span>
-    </button>
-    <button class="filter-btn" data-filter="russia" onclick="setFilter('russia',this)">
-      Russia <span class="count-badge" id="c-russia">0</span>
-    </button>
-    <button class="filter-btn" data-filter="middle-east" onclick="setFilter('middle-east',this)">
-      Middle East <span class="count-badge" id="c-middle-east">0</span>
-    </button>
-    <button class="filter-btn" data-filter="world" onclick="setFilter('world',this)">
-      World <span class="count-badge" id="c-world">0</span>
-    </button>
-  </div>
-
-  <div class="feed" id="feed">
-    <div class="state-msg">Loading…</div>
-  </div>
-
-  <div class="footer">
-    <a href="https://liveuamap.com" target="_blank" class="footer-source">↗ liveuamap.com</a>
-    <span class="footer-count" id="footer-count">— items</span>
-  </div>
+<div class="header">
+    <h1>TACTICAL INTELLIGENCE FEED</h1>
+    <p>Liveuamap Event Stream</p>
 </div>
 
+<div class="controls">
+    <select id="region">
+        <option value="0">Ukraine</option>
+        <option value="3">Syria</option>
+        <option value="1">Global / Mixed</option>
+    </select>
+
+```
+<button onclick="loadFeed()">LOAD FEED</button>
+```
+
+</div>
+
+<div id="status" class="status">
+    Standby. Awaiting feed load.
+</div>
+
+<div id="feed" class="feed"></div>
+
 <script>
-  // ============================================================
-  //  DATA — paste fresh items here whenever you want to update
-  //  Run the "refresh" flow to get new items from Liveuamap
-  // ============================================================
-  const NEWS_ITEMS = [
-    { tag:'ukraine', loc:'Vinnytsia Oblast',       time:'24 Mar', text:'Russia launched 556 strike drones between 9am–6pm; the Ukrainian Air Force recorded 15 impacts across the country.' },
-    { tag:'ukraine', loc:'Lviv Oblast',             time:'24 Mar', text:'Drone raids on Lviv region left 32 wounded; critical infrastructure targeted in Komarnivska and Dobrosynsko-Maherivska communities.' },
-    { tag:'ukraine', loc:'Ivano-Frankivsk',         time:'24 Mar', text:'2 killed and 4 wounded including a child following a drone strike on Ivano-Frankivsk.' },
-    { tag:'ukraine', loc:'Dnipro',                  time:'24 Mar', text:'Multiple explosions reported in Dnipro city during a renewed drone raid; one drone shot down by air defences.' },
-    { tag:'ukraine', loc:'Kharkiv Oblast',          time:'24 Mar', text:'Russian troops struck Odnorobivka village in Zolochiv district with 5 Molniya UAVs.' },
-    { tag:'ukraine', loc:'Mykolaiv Oblast',         time:'24 Mar', text:'Russia launched Tornado missiles targeting Ochakiv.' },
-    { tag:'ukraine', loc:'Zaporizhzhia NPP',        time:'24 Mar', text:'The Russian-occupied Zaporizhzhia nuclear plant is once again running on a single power transmission line, the IAEA reported.' },
-    { tag:'ukraine', loc:'Crimea',                  time:'24 Mar', text:'A Zircon hypersonic missile launcher has been destroyed in Crimea, according to Ukraine\'s Defence Intelligence.' },
-    { tag:'russia',  loc:'Saratov Oblast',          time:'24 Mar', text:'Ukraine\'s General Staff confirms overnight strikes on facilities at the Saratov oil refinery, used to supply fuel to Russian forces.' },
-    { tag:'russia',  loc:'Nevinnomyssk',            time:'24 Mar', text:'The Nevinnomysskyi Azot chemical plant was attacked with drones in Stavropol Krai.' },
-    { tag:'middle-east', loc:'Dubai, UAE',          time:'24 Mar', text:'UAE air defences intercepted 7 ballistic missiles and 16 drones launched from Iran; 352 ballistic missiles intercepted since attacks began.' },
-    { tag:'middle-east', loc:'Tehran, Iran',        time:'24 Mar', text:'Iran issued a warning to civilians in northern Israel — Upper Galilee, Lower Galilee, Golan Heights, and Haifa.' },
-    { tag:'middle-east', loc:'Isfahan, Iran',       time:'24 Mar', text:'The IRGC\'s Khordad 15 base in Baharestan, Isfahan, was targeted on the afternoon of 23 March.' },
-    { tag:'middle-east', loc:'Lebanon',             time:'24 Mar', text:'Israeli airstrikes hit Bint Jbeil and nearby towns in southern Lebanon; Hezbollah says it struck Israeli soldiers in Markaba with missiles.' },
-    { tag:'middle-east', loc:'Syria',               time:'24 Mar', text:'Six drones targeted the Rmelan (Kharab al-Jir) US-linked base in Hasakah, reportedly launched from Iraq by Iran-backed factions.' },
-    { tag:'world',   loc:'Moldova',                 time:'24 Mar', text:'Russian strikes on Ukraine\'s energy sector damaged the Isaccea–Vulcănești power line linking Moldova to Romania; a 60-day energy emergency is being considered.' },
-    { tag:'world',   loc:'Albania',                 time:'24 Mar', text:'Protesters hurled fireworks and Molotov cocktails at government buildings in Tirana; police responded with water cannons and tear gas.' },
-    { tag:'world',   loc:'Cyprus',                  time:'24 Mar', text:'Turkey deployed six F-16 fighter jets and air defence systems to northern Cyprus amid regional tensions.' },
-    { tag:'world',   loc:'Islamabad',               time:'24 Mar', text:'US–Iran talks are underway in Islamabad, mediated by Turkey, Egypt and Pakistan; Trump postponed Pentagon strikes on Iranian power plants for 5 days.' },
-  ];
 
-  // ============================================================
-  //  State
-  // ============================================================
-  let currentFilter = 'all';
+/* ===============================
+   🔑 INSERT YOUR API KEY BELOW
+   =============================== */
 
-  const tagLabel = { ukraine:'Ukraine', russia:'Russia', 'middle-east':'Middle East', world:'World' };
+const API_KEY = "7972bb2efd5dd840083e443991563d73";
 
-  function setFilter(f, btn) {
-    currentFilter = f;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-  }
+/* Example:
+const API_KEY = "7972bb2efd5dd840083e443991563d73";
+*/
 
-  function render() {
-    const feed = document.getElementById('feed');
-    const list = currentFilter === 'all' ? NEWS_ITEMS : NEWS_ITEMS.filter(i => i.tag === currentFilter);
-    if (!list.length) {
-      feed.innerHTML = '<div class="state-msg">No items for this filter</div>';
-      return;
+/* =============================== */
+
+let autoRefresh = null;
+
+async function loadFeed(){
+    const region = document.getElementById("region").value;
+    const feed = document.getElementById("feed");
+    const status = document.getElementById("status");
+
+    status.innerText = "Loading tactical feed...";
+    feed.innerHTML = "";
+
+    try{
+        const url = `https://a.liveuamap.com/api?a=mpts&resid=${region}&count=25&key=${API_KEY}`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if(!data.venues || data.venues.length === 0){
+            status.innerText = "No events returned.";
+            return;
+        }
+
+        data.venues.forEach(event => {
+
+            let color = "#00ffc3";
+            const text = (event.name || "").toLowerCase();
+
+            if(text.includes("explosion")) color = "#ff3b3b";
+            else if(text.includes("strike")) color = "#ff8800";
+            else if(text.includes("protest")) color = "#ffd000";
+
+            const item = document.createElement("div");
+            item.className = "item";
+            item.style.borderLeft = "3px solid " + color;
+
+            const time = new Date(event.timestamp * 1000).toLocaleString();
+
+            item.innerHTML = `
+                <div class="title">${event.name}</div>
+                <div class="meta">${time}</div>
+                <a href="${event.link}" target="_blank">View Full Report</a>
+            `;
+
+            feed.appendChild(item);
+        });
+
+        status.innerText = "Live • Auto-refresh every 60 seconds";
+
+        startAutoRefresh();
+
+    }catch(err){
+        console.error(err);
+        status.innerText = "⚠️ Failed to load (API key, rate limit, or CORS issue)";
     }
-    feed.innerHTML = list.map(i => `
-      <div class="item">
-        <div class="item-meta">
-          <span class="tag tag-${i.tag}">${tagLabel[i.tag]}</span>
-          ${i.loc ? `<span class="item-loc">${i.loc}</span>` : ''}
-          <span class="item-time">${i.time || ''}</span>
-        </div>
-        <div class="item-text">${i.text}</div>
-      </div>
-    `).join('');
+}
 
-    document.getElementById('footer-count').textContent = list.length + ' item' + (list.length !== 1 ? 's' : '');
-  }
+function startAutoRefresh(){
+    if(autoRefresh) clearInterval(autoRefresh);
+    autoRefresh = setInterval(loadFeed, 60000);
+}
 
-  function updateCounts() {
-    document.getElementById('c-all').textContent = NEWS_ITEMS.length;
-    ['ukraine','russia','middle-east','world'].forEach(t => {
-      document.getElementById('c-'+t).textContent = NEWS_ITEMS.filter(i => i.tag === t).length;
-    });
-  }
-
-  function updateTimestamp() {
-    const now = new Date();
-    document.getElementById('ts').textContent =
-      now.toLocaleDateString('en-GB', { day:'numeric', month:'short' }) + ' ' +
-      now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-  }
-
-  function refresh() {
-    // Spin the button visually
-    const btn = document.getElementById('refresh-btn');
-    btn.classList.add('spinning');
-    btn.disabled = true;
-    setTimeout(() => {
-      btn.classList.remove('spinning');
-      btn.disabled = false;
-      updateTimestamp();
-      render();
-      // NOTE: To add real-time updates, replace NEWS_ITEMS array
-      // with a fetch() call to your own backend/API endpoint
-      // that scrapes or proxies Liveuamap's latest data.
-    }, 900);
-  }
-
-  // Init
-  updateCounts();
-  updateTimestamp();
-  render();
 </script>
 
 </body>
