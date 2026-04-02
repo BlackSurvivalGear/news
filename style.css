@@ -1,1 +1,92 @@
+body{
+margin:0;
+font-family:'Rajdhani',sans-serif;
+background:#020606;
+color:#ffffff;
+}
 
+/* HEADER */
+.header{
+text-align:center;
+padding:20px;
+border-bottom:1px solid #00ffc3;
+}
+
+.header h1{
+margin:0;
+color:#00ffc3;
+font-size:22px;
+}
+
+.header p{
+margin-top:5px;
+font-size:13px;
+opacity:0.7;
+}
+
+/* CONTROLS */
+.controls{
+display:flex;
+justify-content:center;
+gap:10px;
+padding:15px;
+}
+
+select, button{
+background:#061018;
+color:#00ffc3;
+border:1px solid #00ffc3;
+padding:8px 12px;
+cursor:pointer;
+font-family:'Rajdhani',sans-serif;
+}
+
+button:hover
+
+/* STATUS */
+.status{
+text-align:center;
+font-size:12px;
+opacity:0.7;
+margin-bottom:10px;
+}
+
+/* FEED */
+.feed{
+max-width:900px;
+margin:auto;
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+/* ITEM */
+.item{
+background:#020606;
+padding:12px;
+font-size:14px;
+border-left:3px solid #00ffc3;
+}
+
+/* TEXT */
+.title{
+font-weight:bold;
+color:#00ffc3;
+}
+
+.meta{
+font-size:12px;
+opacity:0.6;
+margin:6px 0;
+}
+
+a{
+color:#00aaff;
+font-size:12px;
+text-decoration:none;
+}
+
+a:hover{
+text-decoration:underline;
+}
