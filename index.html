@@ -46,8 +46,9 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 .placeholder{height:calc(100vh - 126px);display:flex;justify-content:center;align-items:center}
 .ops-bay{width:min(1500px,96%);height:78vh;border:1px solid #00ffee44;background:#040b10;overflow:hidden}
 #opsShell{height:100%;display:grid;grid-template-columns:280px 1fr;overflow:hidden}
-#opsShell.collapsed{grid-template-columns:0 1fr}
-#opsShell.collapsed #opsMenu{width:0;padding:0;border:none;overflow:hidden}
+#opsShell.collapsed{grid-template-columns:48px 1fr}
+#opsShell.collapsed #opsMenu{padding:8px;overflow:hidden}
+#opsShell.collapsed .menu-items,#opsShell.collapsed .drawer-toggle:not(:first-child){display:none}
 #opsMenu{background:#061018;padding:18px;border-right:1px solid #00ffee44;overflow-y:auto;transition:width 0.25s ease,padding 0.25s ease}
 .drawer-toggle{width:100%;padding:10px;margin-bottom:18px;background:#081821;border:1px solid #00ffee55;color:#00ffee;cursor:pointer;font-family:'Share Tech Mono';transition:transform 0.15s ease,box-shadow 0.15s ease,text-shadow 0.15s ease}
 .menu-items{overflow:hidden;transition:max-height 0.3s ease;max-height:2000px}
@@ -118,8 +119,8 @@ function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.sta
 let collapsed=false,full=false,idx=0;let menuVisible=true;
 function active(id){document.querySelectorAll('.command-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toggleDrawer(){collapsed=!collapsed;document.getElementById('opsShell').classList.toggle('collapsed',collapsed)}
-function toggleMenu(){menuVisible=!menuVisible;let items=document.getElementById('menuItems');if(items)items.classList.toggle('hidden',!menuVisible)}
-function renderOps(menu,content){opsBay.style.cssText='';full=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='drawer-toggle' onclick='toggleDrawer()'>☰ COMMAND PANEL</button><button class='drawer-toggle' onclick='toggleMenu()' style='margin-bottom:12px;font-size:11px'>▼ ${menuVisible?'HIDE':'SHOW'} MENU</button><div id='menuItems' class='menu-items${menuVisible?'':' hidden'}'>${menu}</div></div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
+function toggleMenu(){menuVisible=!menuVisible;let items=document.getElementById('menuItems');if(items)items.classList.toggle('hidden',!menuVisible);let btn=document.getElementById('menuToggleBtn');if(btn)btn.textContent='▼ '+(menuVisible?'HIDE':'SHOW')+' MENU'}
+function renderOps(menu,content){opsBay.style.cssText='';full=false;collapsed=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='drawer-toggle' onclick='toggleDrawer()'>☰ COMMAND PANEL</button><button id='menuToggleBtn' class='drawer-toggle' onclick='toggleMenu()' style='margin-bottom:12px;font-size:11px'>▼ ${menuVisible?'HIDE':'SHOW'} MENU</button><div id='menuItems' class='menu-items${menuVisible?'':' hidden'}'>${menu}</div></div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
 
 const globalFeeds=[['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3'],['AL JAZEERA','https://www.youtube.com/embed/gCNeDWCI0vo'],['DW','https://www.youtube.com/embed/W8nThq62Vb4'],['BLOOMBERG','https://www.youtube.com/embed/BOy2xDU1LC8'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['SKY','https://www.youtube.com/embed/YDvsBbKfLPA']];
 
