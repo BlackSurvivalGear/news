@@ -46,9 +46,23 @@ iframe,.map-frame{width:100%;height:100%;border:none}
 #commandFooter{padding:28px;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#050b12,#07141c);border-top:2px solid #00ffee55;position:relative}
 .version{position:absolute;right:20px;bottom:12px;font-size:11px;color:#00ffee55;font-family:'Share Tech Mono'}
 a{color:#00ffee;text-decoration:none}
+#splashScreen{position:fixed;top:0;left:0;width:100vw;height:100vh;background:#02070d;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:99999;transition:opacity 0.5s ease}
+#splashScreen.fade-out{opacity:0}
+#splashScreen video{width:140px;height:140px;border-radius:50%;border:1px solid #00ffee88;box-shadow:0 0 30px #00ffee,0 0 60px #00ffee55;animation:radarPulse 2s infinite}
+#splashScreen .splash-title{margin-top:20px;font-size:28px;font-weight:700;letter-spacing:3px;color:#06161c;text-shadow:0 0 30px #00ffee,0 0 60px #00ffee,0 0 100px #00ffee88}
+#splashScreen .splash-sub{font-size:13px;letter-spacing:6px;color:#00ffee;margin-top:6px;font-family:'Share Tech Mono'}
+.loader-wrap{margin-top:32px;width:260px;height:3px;background:#0a1a22;border-radius:2px;overflow:hidden}
+.loader-bar{width:0;height:100%;background:linear-gradient(90deg,#00ffee,#00ffeedd);border-radius:2px;animation:loadBar 2s ease-in-out forwards}
+@keyframes loadBar{0%{width:0}100%{width:100%}}
 </style>
 </head>
 <body>
+<div id='splashScreen'>
+<video autoplay muted loop playsinline><source src='https://blacksurvivalgear.github.io/osint/RADAR3.mp4'></video>
+<div class='splash-title'>BLACK SURVIVAL GEAR</div>
+<div class='splash-sub'>OSINT PLATFORM</div>
+<div class='loader-wrap'><div class='loader-bar'></div></div>
+</div>
 <header id='commandHeader'>
 <div class='brand-wrap'>
 <a href='https://www.blacksurvivalgear.com/' target='_blank'><video class='radar-logo' autoplay muted loop playsinline><source src='https://blacksurvivalgear.github.io/osint/RADAR3.mp4'></video></a>
@@ -82,11 +96,12 @@ a{color:#00ffee;text-decoration:none}
 <span class='version'>v1.0.0</span>
 </footer>
 <script>
+setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('fade-out');setTimeout(()=>s.remove(),500)},2000);
 function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GMT','GMT / ZULU')}setInterval(updateClock,1000);updateClock();
 let collapsed=false,africa=false,full=false,idx=0;
 function active(id){document.querySelectorAll('.command-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toggleDrawer(){collapsed=!collapsed;document.getElementById('opsShell').classList.toggle('collapsed',collapsed)}
-function renderOps(menu,content){opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='drawer-toggle' onclick='toggleDrawer()'>☰ COMMAND PANEL</button>${menu}</div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
+function renderOps(menu,content){opsBay.style.cssText='';full=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='drawer-toggle' onclick='toggleDrawer()'>☰ COMMAND PANEL</button>${menu}</div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
 
 const globalFeeds=[['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3'],['AL JAZEERA','https://www.youtube.com/embed/gCNeDWCI0vo'],['DW','https://www.youtube.com/embed/W8nThq62Vb4'],['BLOOMBERG','https://www.youtube.com/embed/BOy2xDU1LC8'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['SKY','https://www.youtube.com/embed/YDvsBbKfLPA']];
 const africaFeeds=[['DW AFRICA','https://www.youtube.com/embed/W8nThq62Vb4'],['AFRICA LIVE','https://www.youtube.com/embed/E8PRZmDUiPw'],['AFRICA TODAY','https://www.youtube.com/embed/NQjabLGdP5g'],['AFRICA NOW','https://www.youtube.com/embed/Mv14aabg4mA'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3']];
@@ -116,6 +131,7 @@ let feeds=africaFeeds;
 if(africa===false)feeds=globalFeeds;
 let viewport=document.getElementById('newsViewport');
 if(full){document.getElementById('opsBay').style.cssText='position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;border:none';viewport.innerHTML=`<div style='position:relative;width:100%;height:100%'><button onclick="exitFullScreen()" style='position:absolute;top:10px;right:10px;z-index:10000;padding:8px 16px;background:#081821;border:1px solid #00ffee66;color:#00ffee;cursor:pointer;font-family:Share Tech Mono'>EXIT</button><iframe src='${feeds[idx][1]}' style='width:100%;height:100%;border:none'></iframe></div>`;return}
+document.getElementById('opsBay').style.cssText='';
 let h="<div style='height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:2px'>";
 feeds.forEach(f=>h+=`<div class='feed-panel'><div class='feed-label'>${f[0]}</div><iframe src='${f[1]}'></iframe></div>`);
 viewport.innerHTML=h+'</div>'}
