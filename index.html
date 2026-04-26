@@ -88,6 +88,18 @@ function renderOps(menu,content){opsBay.innerHTML=`<div id='opsShell'><div id='o
 const globalFeeds=[['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3'],['AL JAZEERA','https://www.youtube.com/embed/gCNeDWCI0vo'],['DW','https://www.youtube.com/embed/W8nThq62Vb4'],['BLOOMBERG','https://www.youtube.com/embed/BOy2xDU1LC8'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['SKY','https://www.youtube.com/embed/YDvsBbKfLPA']];
 const africaFeeds=[['DW AFRICA','https://www.youtube.com/embed/W8nThq62Vb4'],['AFRICA LIVE','https://www.youtube.com/embed/E8PRZmDUiPw'],['AFRICA TODAY','https://www.youtube.com/embed/NQjabLGdP5g'],['AFRICA NOW','https://www.youtube.com/embed/Mv14aabg4mA'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3']];
 
+const westernChannels={
+NorthAmerica:[['Bloomberg','https://www.youtube.com/embed/iEpJwprxDdk'],['CNN','https://www.youtube.com/embed/w_Ma8oQLmSM'],['CNBC','https://www.youtube.com/embed/9NyxcX3rhQs'],['Fox News','https://www.youtube.com/embed/QaftgYkG-ek'],['Newsmax','https://www.youtube.com/embed/S-lFBzloL2Y'],['ABC News','https://www.youtube.com/embed/w_Ma8oQLmSM'],['CBS News','https://www.youtube.com/embed/R9L8sDK8iEc'],['NBC News','https://www.youtube.com/embed/yMr0neQhu6c'],['CBC News','https://www.youtube.com/embed/jxP_h3V-Dv8']],
+Europe:[['Sky News','https://www.youtube.com/embed/uvviIF4725I'],['Euronews','https://www.youtube.com/embed/pykpO5kQJ98'],['DW','https://www.youtube.com/embed/LuKwFajn37U'],['France 24','https://www.youtube.com/embed/u9foWyMSETk'],['BBC News','https://www.youtube.com/embed/bjgQzJzCZKs'],['RTVE 24H','https://www.youtube.com/embed/7_srED6k0bE'],['TRT Haber','https://www.youtube.com/embed/3XHebGJG0bc'],['CNN TURK','https://www.youtube.com/embed/lsY4GFoj_xY'],['Tagesschau24','https://www.youtube.com/embed/fC_q9TkO1uU'],['France 24 FR','https://www.youtube.com/embed/l8PMl7tUDIE'],['France Info','https://www.youtube.com/embed/Z-Nwo-ypKtM'],['BFMTV','https://www.youtube.com/embed/smB_F6DW7cI'],['TVP Info','https://www.youtube.com/embed/3jKb-uThfrg'],['Telewizja Republika','https://www.youtube.com/embed/dzntyCTgJMQ']],
+LatinAmerica:[['CNN Brasil','https://www.youtube.com/embed/qcTn899skkc'],['TN Argentina','https://www.youtube.com/embed/cb12KmMMDJA'],['C5N','https://www.youtube.com/embed/SF06Qy1Ct6Y']],
+Oceania:[['ABC News Australia','https://www.youtube.com/embed/vOTiJkg1voo']]
+};
+
+const easternChannels={
+Asia:[['TBS NEWS DIG','https://www.youtube.com/embed/aUDm173E8k8'],['CNA','https://www.youtube.com/embed/XWq5kBlakcQ'],['NHK World','https://www.youtube.com/embed/f0lYfG_vY_U'],['India Today','https://www.youtube.com/embed/sYZtOFzM78M'],['ABP News','https://www.youtube.com/embed/mKXfcdJArAI'],['WION','https://www.youtube.com/embed/live_stream?channel=UC_gUM8rL-Lrg6O3adPW9K1g'],['Arirang News','https://www.youtube.com/embed/live_stream?channel=UCVhZFhVERyP8VhHXl4GqDwA']],
+MiddleEast:[['Al Jazeera','https://www.youtube.com/embed/gCNeDWCI0vo'],['Al Arabiya','https://www.youtube.com/embed/n7eQejkXbnM'],['Al Hadath','https://www.youtube.com/embed/xWXpl7azI8k'],['Sky News Arabia','https://www.youtube.com/embed/U--OjmpjF5o'],['TRT World','https://www.youtube.com/embed/ABfFhWzWs0s'],['Kan 11','https://www.youtube.com/embed/TCnaIE_SAtM'],['i24NEWS','https://www.youtube.com/embed/myKybZUK0IA'],['Asharq News','https://www.youtube.com/embed/f6VpkfV7m4Y'],['Al Jazeera Arabic','https://www.youtube.com/embed/bNyUyrR0PHo']]
+};
+
 const africaData={
 NorthAfrica:{Algeria:[['Algeria Press Service','https://www.aps.dz'],['El Watan','https://www.elwatan.com']],Egypt:[['Al-Ahram','https://english.ahram.org.eg'],['Al-Masry Al-Youm','https://www.almasryalyoum.com']],Libya:[['Libya Herald','https://www.libyaherald.com'],['Libyan Observer','https://www.libyanobserver.ly']],Mauritania:[['Al-Akhbar','https://alakhbar.info'],['Sahara Media','https://saharamedias.net']],Morocco:[['Le Matin','https://lematin.ma'],['MAP','https://www.map.ma']],Sudan:[['Sudan Tribune','https://sudantribune.com'],['Sudanese News','https://www.sudanews.net']],Tunisia:[['TAP','https://www.tap.info.tn'],['La Presse','https://lapresse.tn']]},
 WestAfrica:{AES:[['Sputnik Africa','https://en.sputniknews.africa/search/?query=AES'],['leFaso','https://www.lefaso.net'],['Burkina24','https://www.burkina24.com'],['Maliweb','https://www.maliweb.net'],['Le Republicain','https://www.maliweb.net'],['Niamey24','https://www.niameysoir.com'],['Le Sahel','https://www.lesahel.org']],Benin:[['Fraternite','https://www.fraternitebj.info'],['Le Matinal','https://www.lematinal.bj']],BurkinaFaso:[['leFaso','https://www.lefaso.net'],['Burkina24','https://www.burkina24.com']],CapeVerde:[['A Semana','https://www.asemana.cv'],['Santiago Magazine','https://www.santiagomagazine.cv']],Gambia:[['The Point','https://thepoint.gm'],['Foroyaa','https://foroyaa.net']],Ghana:[['Graphic','https://graphic.com.gh'],['Daily Guide','https://dailyguidenetwork.com']],Guinea:[['Guinee24','https://guinee24.com'],['Conakry Infos','https://www.conakryinfos.com']],GuineaBissau:[['O Gologb','https://www.ogologb.com'],['Novidades','https://novidades.gw']],IvoryCoast:[['Abidjan.net','https://www.abidjan.net'],['Le Patriote','https://www.lepatriote.net']],Liberia:[['New Dawn','https://www.newdawnliberia.com'],['FrontPageAfrica','https://www.frontpageafricaonline.com']],Mali:[['Maliweb','https://www.maliweb.net'],['Le Republicain','https://www.maliweb.net']],Niger:[['Niamey24','https://www.niameysoir.com'],['Le Sahel','https://www.lesahel.org']],Nigeria:[['Premium Times','https://www.premiumtimesng.com'],['Channels TV','https://www.channelstv.com'],['Leadership','https://leadership.ng'],['The Nation','https://thenationonlineng.net'],['ThisDay','https://www.thisdaylive.com'],['Tribune','https://tribuneonlineng.com'],['Naija News','https://www.naijanews.com'],['The Cable','https://www.thecable.ng'],['Daily Sun','https://www.sunnewsonline.com'],['Ripples','https://www.ripplesnigeria.com'],['Sahara Reporters','https://www.saharareporters.com'],['Vanguard','https://www.vanguardngr.com'],['Punch','https://www.punchng.com'],['Daily Trust','https://www.dailytrust.com']],Senegal:[['Le Soleil','https://www.lesoleil.sn'],['Seneweb','https://www.seneweb.com']],SierraLeone:[['Concord Times','https://www.concordtimes.com'],['Sierra Express','https://www.sierraexpressmedia.com']],Togo:[['Togo Presse','https://www.togopresse.tg'],['Le Correcteur','https://lecorrecteur.info']]},
@@ -128,12 +140,32 @@ html+='</div>';
 document.getElementById('panAfricaViewport').innerHTML=html;
 }
 
+function loadChannelHub(channels,label){
+active('newsBtn');
+let regionKeys=Object.keys(channels);
+let menu=regionKeys.map(k=>`<button class='command-btn' onclick="loadChannelRegion(${label==='WESTERN'?'westernChannels':'easternChannels'},'${k}')">${k.replace(/([A-Z])/g,' $1').trim().toUpperCase()}</button><br><br>`).join('');
+menu+=`<button class='command-btn' onclick='loadNews()'>⬅ BACK</button>`;
+renderOps(menu,`<div id='channelHubViewport' style='height:100%;overflow-y:auto'></div>`);
+loadChannelRegion(channels,regionKeys[0]);
+}
+function loadChannelRegion(channels,region){
+const feeds=channels[region];
+let cols=Math.min(feeds.length,3);
+let rows=Math.ceil(feeds.length/cols);
+let html=`<div style='height:100%;display:grid;grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);gap:2px'>`;
+feeds.forEach(f=>html+=`<div class='feed-panel'><div class='feed-label'>${f[0]}</div><iframe src='${f[1]}' allow='autoplay;encrypted-media' allowfullscreen></iframe></div>`);
+html+='</div>';
+document.getElementById('channelHubViewport').innerHTML=html;
+}
+
 function loadNews(){
 active('newsBtn');
 renderOps(`
 <button class='command-btn' onclick="africa=false;full=false;renderNews()">GLOBAL NEWS</button><br><br>
 <button class='command-btn' onclick="africa=true;full=false;renderNews()">AFRICA NEWS</button><br><br>
 <button class='command-btn' onclick='loadPanAfricaHub()'>PAN AFRICA</button><br><br>
+<button class='command-btn' onclick="loadChannelHub(westernChannels,'WESTERN')">WESTERN NEWS</button><br><br>
+<button class='command-btn' onclick="loadChannelHub(easternChannels,'EASTERN')">EASTERN NEWS</button><br><br>
 <button class='command-btn' onclick="full=!full;idx=(idx+1)%6;renderNews()">FULL SCREEN</button>
 `,`<div id='newsViewport' style='height:100%'></div>`);
 renderNews();
