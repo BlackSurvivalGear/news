@@ -46,9 +46,12 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 .placeholder{height:calc(100vh - 126px);display:flex;justify-content:center;align-items:center}
 .ops-bay{width:min(1500px,96%);height:78vh;border:1px solid #00ffee44;background:#040b10;overflow:hidden}
 #opsShell{height:100%;display:grid;grid-template-columns:280px 1fr;overflow:hidden}
-#opsShell.collapsed{grid-template-columns:64px 1fr}
-#opsMenu{background:#061018;padding:18px;border-right:1px solid #00ffee44;overflow-y:auto}
+#opsShell.collapsed{grid-template-columns:0 1fr}
+#opsShell.collapsed #opsMenu{width:0;padding:0;border:none;overflow:hidden}
+#opsMenu{background:#061018;padding:18px;border-right:1px solid #00ffee44;overflow-y:auto;transition:width 0.25s ease,padding 0.25s ease}
 .drawer-toggle{width:100%;padding:10px;margin-bottom:18px;background:#081821;border:1px solid #00ffee55;color:#00ffee;cursor:pointer;font-family:'Share Tech Mono';transition:transform 0.15s ease,box-shadow 0.15s ease,text-shadow 0.15s ease}
+.menu-items{overflow:hidden;transition:max-height 0.3s ease;max-height:2000px}
+.menu-items.hidden{max-height:0}
 .feed-panel{position:relative;background:#000;border:1px solid #0f2730}
 .feed-label{position:absolute;top:10px;left:10px;padding:6px 10px;background:rgba(3,22,29,.8);border:1px solid #00ffee66;color:#00ffee;z-index:2}
 iframe,.map-frame{width:100%;height:100%;border:none}
@@ -112,13 +115,14 @@ setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('f
 function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GMT','GMT / ZULU')}setInterval(updateClock,1000);updateClock();
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.startsWith('http://')))return'#';return esc(s).replace(/'/g,'&#39;')}
-let collapsed=false,africa=false,full=false,idx=0;
+let collapsed=false,full=false,idx=0;let menuVisible=true;
 function active(id){document.querySelectorAll('.command-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toggleDrawer(){collapsed=!collapsed;document.getElementById('opsShell').classList.toggle('collapsed',collapsed)}
-function renderOps(menu,content){opsBay.style.cssText='';full=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='drawer-toggle' onclick='toggleDrawer()'>☰ COMMAND PANEL</button>${menu}</div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
+function toggleMenu(){menuVisible=!menuVisible;let items=document.getElementById('menuItems');if(items)items.classList.toggle('hidden',!menuVisible)}
+function renderOps(menu,content){opsBay.style.cssText='';full=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='drawer-toggle' onclick='toggleDrawer()'>☰ COMMAND PANEL</button><button class='drawer-toggle' onclick='toggleMenu()' style='margin-bottom:12px;font-size:11px'>▼ ${menuVisible?'HIDE':'SHOW'} MENU</button><div id='menuItems' class='menu-items${menuVisible?'':' hidden'}'>${menu}</div></div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
 
 const globalFeeds=[['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3'],['AL JAZEERA','https://www.youtube.com/embed/gCNeDWCI0vo'],['DW','https://www.youtube.com/embed/W8nThq62Vb4'],['BLOOMBERG','https://www.youtube.com/embed/BOy2xDU1LC8'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['SKY','https://www.youtube.com/embed/YDvsBbKfLPA']];
-const africaFeeds=[['DW AFRICA','https://www.youtube.com/embed/W8nThq62Vb4'],['AFRICA LIVE','https://www.youtube.com/embed/E8PRZmDUiPw'],['AFRICA TODAY','https://www.youtube.com/embed/NQjabLGdP5g'],['AFRICA NOW','https://www.youtube.com/embed/Mv14aabg4mA'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3']];
+
 
 const africanChannels=[['DW Africa','https://www.youtube.com/embed/W8nThq62Vb4'],['Africa Live','https://www.youtube.com/embed/E8PRZmDUiPw'],['Africa Today','https://www.youtube.com/embed/NQjabLGdP5g'],['Africa Now','https://www.youtube.com/embed/Mv14aabg4mA'],['Africanews','https://www.youtube.com/embed/NJ1GmKo9zIg']];
 const americanChannels=[['ABC News','https://www.youtube.com/embed/w_Ma8oQLmSM'],['Bloomberg','https://www.youtube.com/embed/iEpJwprxDdk'],['C5N','https://www.youtube.com/embed/SF06Qy1Ct6Y'],['CBC News','https://www.youtube.com/embed/jxP_h3V-Dv8'],['CNBC','https://www.youtube.com/embed/9NyxcX3rhQs'],['CNN','https://www.youtube.com/embed/w_Ma8oQLmSM'],['CNN Brasil','https://www.youtube.com/embed/qcTn899skkc'],['TN Argentina','https://www.youtube.com/embed/cb12KmMMDJA']];
@@ -136,8 +140,7 @@ SouthernAfrica:{Botswana:[['Mmegi','https://www.mmegi.bw'],['Patriot','https://w
 };
 
 function renderNews(){
-let feeds=africaFeeds;
-if(africa===false)feeds=globalFeeds;
+let feeds=globalFeeds;
 let viewport=document.getElementById('newsViewport');
 if(full){document.getElementById('opsBay').style.cssText='position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;border:none';viewport.innerHTML=`<div style='position:relative;width:100%;height:100%'><button onclick="exitFullScreen()" style='position:absolute;top:10px;right:10px;z-index:10000;padding:8px 16px;background:#081821;border:1px solid #00ffee66;color:#00ffee;cursor:pointer;font-family:Share Tech Mono'>EXIT</button><iframe src='${feeds[idx][1]}' style='width:100%;height:100%;border:none'></iframe></div>`;return}
 document.getElementById('opsBay').style.cssText='';
@@ -195,7 +198,7 @@ viewport.innerHTML=`<div style='position:relative;width:100%;height:100%'><butto
 }
 
 function exitFullScreen(){full=false;document.getElementById('opsBay').style.cssText='';loadNews()}
-function updateChannelBar(){let bar=document.getElementById('channelBar');if(bar)bar.innerHTML=renderChannelBar(africa?africaFeeds:globalFeeds)}
+function updateChannelBar(){let bar=document.getElementById('channelBar');if(bar)bar.innerHTML=renderChannelBar(globalFeeds)}
 function renderChannelBar(feeds){
 let bar="<div style='display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #00ffee44;background:#061018;flex-shrink:0'>";
 feeds.forEach((f,i)=>bar+=`<button onclick='idx=${i};full=true;renderNews()' style='padding:6px 12px;background:none;border:none;border-right:1px solid #00ffee22;color:#00ffee;font-family:Share Tech Mono;font-size:11px;cursor:pointer;white-space:nowrap;transition:background 0.15s'onmouseover='this.style.background="#0c2430"'onmouseout='this.style.background="none"'>${f[0]}</button>`);
@@ -203,8 +206,7 @@ return bar+'</div>'}
 function loadNews(){
 active('newsBtn');
 renderOps(`
-<button class='command-btn' onclick="africa=false;full=false;updateChannelBar();renderNews()">GLOBAL NEWS</button><br><br>
-<button class='command-btn' onclick="africa=true;full=false;updateChannelBar();renderNews()">AFRICA NEWS</button><br><br>
+<button class='command-btn' onclick="full=false;updateChannelBar();renderNews()">GLOBAL NEWS</button><br><br>
 <button class='command-btn' onclick="currentRegionChannels=africanChannels;loadRegionHub(africanChannels,'AFRICAN')">AFRICAN NEWS</button><br><br>
 <button class='command-btn' onclick="currentRegionChannels=americanChannels;loadRegionHub(americanChannels,'AMERICAN')">AMERICAN NEWS</button><br><br>
 <button class='command-btn' onclick="currentRegionChannels=asianChannels;loadRegionHub(asianChannels,'ASIAN')">ASIAN NEWS</button><br><br>
@@ -215,7 +217,7 @@ renderOps(`
 <button class='command-btn' onclick='exitFullScreen()'>EXIT FULL SCREEN</button><br><br>
 <button class='command-btn' onclick='loadPanAfricaHub()'>PAN AFRICAN NEWS</button>
 `,`<div style='display:flex;flex-direction:column;height:100%'><div id='channelBar'></div><div id='newsViewport' style='flex:1;min-height:0'></div></div>`);
-let currentFeeds=africa?africaFeeds:globalFeeds;
+let currentFeeds=globalFeeds;
 document.getElementById('channelBar').innerHTML=renderChannelBar(currentFeeds);
 renderNews();
 }
