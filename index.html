@@ -278,7 +278,7 @@ const rss=[
 'https://feeds.skynews.com/feeds/rss/world.xml'
 ];
 const tags=['AJ','AP','BBC','CNBC','DW','EURO','FR24','GUARDIAN','REUTERS','RT','SKY'];let cf=0;
-document.querySelectorAll('.channel').forEach((b,i)=>b.onclick=()=>{document.querySelectorAll('.channel').forEach(x=>x.classList.remove('active'));b.classList.add('active');cf=i;loadTicker()});
+document.querySelectorAll('#newsTickerWrap .channel').forEach((b,i)=>b.onclick=()=>{document.querySelectorAll('#newsTickerWrap .channel').forEach(x=>x.classList.remove('active'));b.classList.add('active');cf=i;loadTicker()});
 async function loadTicker(){try{let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss[cf]));let d=await r.json();newsTicker.innerHTML=d.items.slice(0,10).map(i=>`<a class='headline-link' href='${safeHref(i.link)}' target='_blank'>[${tags[cf]}] ${esc(i.title)}</a>`).join('')}catch(e){newsTicker.innerHTML='Tactical Feed Offline...'}}
 
 const breakingFeeds=['https://feeds.bbci.co.uk/news/world/rss.xml','https://news.google.com/rss/search?q=site:reuters.com+world&hl=en-US&gl=US&ceid=US:en','https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en'];
