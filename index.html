@@ -15,13 +15,14 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 @keyframes radarPulse{50%{box-shadow:0 0 26px #00ffeeaa}}
 .brand-wrap:hover .radar-logo{box-shadow:0 0 30px #00ffee,0 0 60px #00ffee,0 0 100px #00ffee88;animation:none}
 .callsign{font-size:30px;font-weight:700;letter-spacing:2px;color:#06161c;text-shadow:0 0 18px #00ffee;transition:text-shadow 0.3s ease;cursor:default}
-.brand-wrap:hover .callsign{text-shadow:0 0 30px #00ffee,0 0 60px #00ffee,0 0 100px #00ffee,0 0 160px #00ffee,0 0 220px #00ffeeaa}
+.brand-wrap:hover .callsign{text-shadow:0 0 40px #00ffee,0 0 80px #00ffee,0 0 140px #00ffee,0 0 200px #00ffeedd,0 0 280px #00ffee,0 0 360px #00ffeeaa}
 .subline{font-size:16px;letter-spacing:4px;color:#fff;text-shadow:0 0 10px #00ffee,0 0 20px #00ffee88;transition:font-size 0.3s ease,text-shadow 0.3s ease}
 .OSINT.PLATFORM-sub{font-size:16px;letter-spacing:4px;color:#00ffee;transition:font-size 0.3s ease,text-shadow 0.3s ease}
 .brand-wrap:hover .subline,.brand-wrap:hover .OSINT.PLATFORM-sub{font-size:22px;text-shadow:0 0 14px #00ffee,0 0 28px #00ffee,0 0 56px #00ffee88}
 .header-center{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
-.command-btn{padding:10px 14px;border:1px solid #00ffee66;background:#081821;color:#00ffee;font-family:'Share Tech Mono';cursor:pointer}
-.command-btn.active,.command-btn:hover{background:#0c2430}
+.command-btn{padding:10px 14px;border:1px solid #00ffee66;background:#081821;color:#00ffee;font-family:'Share Tech Mono';cursor:pointer;transition:transform 0.15s ease,box-shadow 0.15s ease,background 0.15s ease}
+.command-btn:hover{background:#0c2430;transform:translateY(-2px);box-shadow:0 0 12px #00ffee66,0 0 24px #00ffee33}
+.command-btn.active{background:#0c2430;box-shadow:0 0 10px #00ffee55,0 0 20px #00ffee22;border-color:#00ffeeaa}
 #gmtClock{text-align:center;color:#00ffee;width:100%}
 .header-right{display:flex;align-items:center;gap:6px;justify-content:flex-end}
 .market-box{padding:4px 8px;text-align:center}
@@ -42,7 +43,8 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 iframe,.map-frame{width:100%;height:100%;border:none}
 #marineFrame iframe{filter:invert(92%) hue-rotate(180deg) grayscale(.85)}
 #flightFrame iframe{filter:invert(92%) hue-rotate(180deg) grayscale(.9) brightness(.6) contrast(1.2)}
-#commandFooter{padding:28px;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#050b12,#07141c);border-top:2px solid #00ffee55}
+#commandFooter{padding:28px;display:flex;flex-direction:column;align-items:center;background:linear-gradient(180deg,#050b12,#07141c);border-top:2px solid #00ffee55;position:relative}
+.version{position:absolute;right:20px;bottom:12px;font-size:11px;color:#00ffee55;font-family:'Share Tech Mono'}
 a{color:#00ffee;text-decoration:none}
 </style>
 </head>
@@ -77,6 +79,7 @@ a{color:#00ffee;text-decoration:none}
 <footer id='commandFooter'>
 <a href='https://www.blacksurvivalgear.com/' target='_blank'><video class='footer-radar' autoplay muted loop playsinline><source src='https://blacksurvivalgear.github.io/osint/RADAR3.mp4'></video></a>
 <a href='#'>BlackSurvivalGear.com</a>
+<span class='version'>v1.0.0</span>
 </footer>
 <script>
 function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GMT','GMT / ZULU')}setInterval(updateClock,1000);updateClock();
@@ -112,7 +115,7 @@ function renderNews(){
 let feeds=africaFeeds;
 if(africa===false)feeds=globalFeeds;
 let viewport=document.getElementById('newsViewport');
-if(full){viewport.innerHTML=`<iframe src='${feeds[idx][1]}'></iframe>`;return}
+if(full){document.getElementById('opsBay').style.cssText='position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:9999;border:none';viewport.innerHTML=`<div style='position:relative;width:100%;height:100%'><button onclick="exitFullScreen()" style='position:absolute;top:10px;right:10px;z-index:10000;padding:8px 16px;background:#081821;border:1px solid #00ffee66;color:#00ffee;cursor:pointer;font-family:Share Tech Mono'>EXIT</button><iframe src='${feeds[idx][1]}' style='width:100%;height:100%;border:none'></iframe></div>`;return}
 let h="<div style='height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:2px'>";
 feeds.forEach(f=>h+=`<div class='feed-panel'><div class='feed-label'>${f[0]}</div><iframe src='${f[1]}'></iframe></div>`);
 viewport.innerHTML=h+'</div>'}
@@ -145,29 +148,41 @@ active('newsBtn');
 let regionKeys=Object.keys(channels);
 let menu=regionKeys.map(k=>`<button class='command-btn' onclick="loadChannelRegion(${label==='WESTERN'?'westernChannels':'easternChannels'},'${k}')">${k.replace(/([A-Z])/g,' $1').trim().toUpperCase()}</button><br><br>`).join('');
 menu+=`<button class='command-btn' onclick='loadNews()'>⬅ BACK</button>`;
-renderOps(menu,`<div id='channelHubViewport' style='height:100%;overflow-y:auto'></div>`);
+renderOps(menu,`<div style='display:flex;flex-direction:column;height:100%'><div id='hubChannelBar'></div><div id='channelHubViewport' style='flex:1;min-height:0;overflow-y:auto'></div></div>`);
 loadChannelRegion(channels,regionKeys[0]);
 }
 function loadChannelRegion(channels,region){
 const feeds=channels[region];
 let cols=Math.min(feeds.length,3);
 let rows=Math.ceil(feeds.length/cols);
+let bar="<div style='display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #00ffee44;background:#061018;flex-shrink:0'>";
+feeds.forEach((f,i)=>bar+=`<button onclick="document.getElementById('channelHubViewport').innerHTML='<iframe src=\\'${f[1]}\\' style=\\'width:100%;height:100%;border:none\\' allow=\\'autoplay;encrypted-media\\' allowfullscreen></iframe>'" style='padding:6px 12px;background:none;border:none;border-right:1px solid #00ffee22;color:#00ffee;font-family:Share Tech Mono;font-size:11px;cursor:pointer;white-space:nowrap;transition:background 0.15s'onmouseover='this.style.background="#0c2430"'onmouseout='this.style.background="none"'>${f[0]}</button>`);
+bar+='</div>';
+let hubBar=document.getElementById('hubChannelBar');if(hubBar)hubBar.innerHTML=bar;
 let html=`<div style='height:100%;display:grid;grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);gap:2px'>`;
 feeds.forEach(f=>html+=`<div class='feed-panel'><div class='feed-label'>${f[0]}</div><iframe src='${f[1]}' allow='autoplay;encrypted-media' allowfullscreen></iframe></div>`);
 html+='</div>';
 document.getElementById('channelHubViewport').innerHTML=html;
 }
 
+function exitFullScreen(){full=false;document.getElementById('opsBay').style.cssText='';loadNews()}
+function updateChannelBar(){let bar=document.getElementById('channelBar');if(bar)bar.innerHTML=renderChannelBar(africa?africaFeeds:globalFeeds)}
+function renderChannelBar(feeds){
+let bar="<div style='display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #00ffee44;background:#061018;flex-shrink:0'>";
+feeds.forEach((f,i)=>bar+=`<button onclick='idx=${i};full=true;renderNews()' style='padding:6px 12px;background:none;border:none;border-right:1px solid #00ffee22;color:#00ffee;font-family:Share Tech Mono;font-size:11px;cursor:pointer;white-space:nowrap;transition:background 0.15s'onmouseover='this.style.background="#0c2430"'onmouseout='this.style.background="none"'>${f[0]}</button>`);
+return bar+'</div>'}
 function loadNews(){
 active('newsBtn');
 renderOps(`
-<button class='command-btn' onclick="africa=false;full=false;renderNews()">GLOBAL NEWS</button><br><br>
-<button class='command-btn' onclick="africa=true;full=false;renderNews()">AFRICA NEWS</button><br><br>
+<button class='command-btn' onclick="africa=false;full=false;updateChannelBar();renderNews()">GLOBAL NEWS</button><br><br>
+<button class='command-btn' onclick="africa=true;full=false;updateChannelBar();renderNews()">AFRICA NEWS</button><br><br>
 <button class='command-btn' onclick="loadChannelHub(westernChannels,'WESTERN')">WESTERN NEWS</button><br><br>
 <button class='command-btn' onclick="loadChannelHub(easternChannels,'EASTERN')">EASTERN NEWS</button><br><br>
 <button class='command-btn' onclick="full=!full;idx=(idx+1)%6;renderNews()">FULL SCREEN</button><br><br>
 <button class='command-btn' onclick='loadPanAfricaHub()'>PAN AFRICAN NEWS</button>
-`,`<div id='newsViewport' style='height:100%'></div>`);
+`,`<div style='display:flex;flex-direction:column;height:100%'><div id='channelBar'></div><div id='newsViewport' style='flex:1;min-height:0'></div></div>`);
+let currentFeeds=africa?africaFeeds:globalFeeds;
+document.getElementById('channelBar').innerHTML=renderChannelBar(currentFeeds);
 renderNews();
 }
 
