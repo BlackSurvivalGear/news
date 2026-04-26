@@ -103,7 +103,7 @@ a{color:#00ffee;text-decoration:none}
 </header>
 <div id='breakingBanner'><div class='breaking-inner'><span class='breaking-tag'>BREAKING</span><div class='breaking-scroll'><div id='breakingTrack' class='breaking-track'></div></div></div></div>
 <div id='newsTickerWrap'>
-<div class='channel-wrap'><button class='channel active'>AJ</button><button class='channel'>BBC</button><button class='channel'>SKY</button><button class='channel'>RT</button><button class='channel'>REUTERS</button><button class='channel'>GUARDIAN</button><button class='channel'>FR24</button><button class='channel'>DW</button><button class='channel'>CNBC</button><button class='channel'>AP</button><button class='channel'>EURO</button></div>
+<div class='channel-wrap'><button class='channel active'>AJ</button><button class='channel'>AP</button><button class='channel'>BBC</button><button class='channel'>CNBC</button><button class='channel'>DW</button><button class='channel'>EURO</button><button class='channel'>FR24</button><button class='channel'>GUARDIAN</button><button class='channel'>REUTERS</button><button class='channel'>RT</button><button class='channel'>SKY</button></div>
 <div class='ticker-window'><div id='newsTicker' class='ticker-track'>Loading Tactical Feed...</div></div>
 </div>
 <section class='placeholder'><div id='opsBay' class='ops-bay'></div></section>
@@ -119,7 +119,7 @@ function esc(s){let d=document.createElement('div');d.textContent=s;return d.inn
 function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.startsWith('http://')))return'#';return esc(s).replace(/'/g,'&#39;')}
 let full=false,idx=0;
 function active(id){document.querySelectorAll('.command-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function renderOps(menu,content){opsBay.style.cssText='';full=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='panel-trigger' title='COMMAND PANEL'>☰</button><div class='menu-content'>${menu}</div></div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
+function renderOps(menu,content){opsBay.style.cssText='';full=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='panel-trigger' onclick="document.getElementById('opsMenu').classList.toggle('open')" title='COMMAND PANEL'>☰</button><div class='menu-content'>${menu}</div></div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
 
 const globalFeeds=[['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3'],['AL JAZEERA','https://www.youtube.com/embed/gCNeDWCI0vo'],['DW','https://www.youtube.com/embed/W8nThq62Vb4'],['BLOOMBERG','https://www.youtube.com/embed/BOy2xDU1LC8'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['SKY','https://www.youtube.com/embed/YDvsBbKfLPA']];
 
@@ -265,16 +265,16 @@ function loadMarkets(){active('marketsBtn');renderOps(`
 newsBtn.onclick=loadNews;mapBtn.onclick=loadConflict;marineBtn.onclick=loadMarine;flightBtn.onclick=loadFlight;marketsBtn.onclick=loadMarkets;
 const rss=[
 'https://www.aljazeera.com/xml/rss/all.xml',
-'https://feeds.bbci.co.uk/news/world/rss.xml',
-'https://feeds.skynews.com/feeds/rss/world.xml',
-'https://www.rt.com/rss/news/',
-'https://news.google.com/rss/search?q=site:reuters.com+world&hl=en-US&gl=US&ceid=US:en',
-'https://www.theguardian.com/world/rss',
-'https://www.france24.com/en/rss',
-'https://rss.dw.com/xml/rss-en-all',
-'https://www.cnbc.com/id/100003114/device/rss/rss.html',
 'https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en',
-'https://www.euronews.com/rss?format=xml'
+'https://feeds.bbci.co.uk/news/world/rss.xml',
+'https://www.cnbc.com/id/100003114/device/rss/rss.html',
+'https://rss.dw.com/xml/rss-en-all',
+'https://www.euronews.com/rss?format=xml',
+'https://www.france24.com/en/rss',
+'https://www.theguardian.com/world/rss',
+'https://news.google.com/rss/search?q=site:reuters.com+world&hl=en-US&gl=US&ceid=US:en',
+'https://www.rt.com/rss/news/',
+'https://feeds.skynews.com/feeds/rss/world.xml'
 ];
 const tags=['AJ','AP','BBC','CNBC','DW','EURO','FR24','GUARDIAN','REUTERS','RT','SKY'];let cf=0;
 document.querySelectorAll('.channel').forEach((b,i)=>b.onclick=()=>{document.querySelectorAll('.channel').forEach(x=>x.classList.remove('active'));b.classList.add('active');cf=i;loadTicker()});
