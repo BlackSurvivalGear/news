@@ -108,6 +108,8 @@ a{color:#00ffee;text-decoration:none}
 <script>
 setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('fade-out');setTimeout(()=>s.remove(),500)},2000);
 function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GMT','GMT / ZULU')}setInterval(updateClock,1000);updateClock();
+function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function safeHref(u){let s=String(u).trim();return(s.startsWith('https://')||s.startsWith('http://'))?esc(s):'#'}
 let collapsed=false,africa=false,full=false,idx=0;
 function active(id){document.querySelectorAll('.command-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toggleDrawer(){collapsed=!collapsed;document.getElementById('opsShell').classList.toggle('collapsed',collapsed)}
@@ -270,7 +272,7 @@ const rss=[
 ];
 const tags=['AJ','BBC','SKY','RT','REUTERS','GUARDIAN','FR24','DW','CNBC','AP','EURO'];let cf=0;
 document.querySelectorAll('.channel').forEach((b,i)=>b.onclick=()=>{document.querySelectorAll('.channel').forEach(x=>x.classList.remove('active'));b.classList.add('active');cf=i;loadTicker()});
-async function loadTicker(){try{let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss[cf]));let d=await r.json();newsTicker.innerHTML=d.items.slice(0,10).map(i=>`<a class='headline-link' href='${i.link}' target='_blank'>[${tags[cf]}] ${i.title}</a>`).join('')}catch(e){newsTicker.innerHTML='Tactical Feed Offline...'}}
+async function loadTicker(){try{let r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rss[cf]));let d=await r.json();newsTicker.innerHTML=d.items.slice(0,10).map(i=>`<a class='headline-link' href='${safeHref(i.link)}' target='_blank'>[${tags[cf]}] ${esc(i.title)}</a>`).join('')}catch(e){newsTicker.innerHTML='Tactical Feed Offline...'}}
 
 const breakingFeeds=['https://feeds.bbci.co.uk/news/world/rss.xml','https://news.google.com/rss/search?q=site:reuters.com+world&hl=en-US&gl=US&ceid=US:en','https://news.google.com/rss/search?q=site:apnews.com&hl=en-US&gl=US&ceid=US:en'];
 const breakingSources=['BBC','REUTERS','AP'];
@@ -288,7 +290,7 @@ let banner=document.getElementById('breakingBanner');
 let track=document.getElementById('breakingTrack');
 if(allItems.length>0){
 let existing=track.innerHTML;
-let newHtml=allItems.map(a=>`<a class='breaking-link' href='${a.link}' target='_blank'>[${a.source}] ${a.title}</a>`).join('');
+let newHtml=allItems.map(a=>`<a class='breaking-link' href='${safeHref(a.link)}' target='_blank'>[${esc(a.source)}] ${esc(a.title)}</a>`).join('');
 track.innerHTML=newHtml+(existing?existing:'');
 banner.classList.add('active')}
 }
