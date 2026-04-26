@@ -101,7 +101,7 @@ function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GM
 let collapsed=false,africa=false,full=false,idx=0;
 function active(id){document.querySelectorAll('.command-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toggleDrawer(){collapsed=!collapsed;document.getElementById('opsShell').classList.toggle('collapsed',collapsed)}
-function renderOps(menu,content){opsBay.style.cssText='';full=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu' style='display:flex;flex-direction:column;height:100%'><button class='drawer-toggle' onclick='toggleDrawer()'>☰ COMMAND PANEL</button><div style='flex:1;overflow-y:auto'>${menu}</div><button class='command-btn' onclick='exitFullScreen()' style='margin-top:auto;width:100%;text-align:center'>EXIT FULL SCREEN</button></div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
+function renderOps(menu,content){opsBay.style.cssText='';full=false;opsBay.innerHTML=`<div id='opsShell'><div id='opsMenu'><button class='drawer-toggle' onclick='toggleDrawer()'>☰ COMMAND PANEL</button>${menu}</div><div id='opsViewport' style='height:100%;overflow-y:auto;min-height:0'>${content}</div></div>`}
 
 const globalFeeds=[['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3'],['AL JAZEERA','https://www.youtube.com/embed/gCNeDWCI0vo'],['DW','https://www.youtube.com/embed/W8nThq62Vb4'],['BLOOMBERG','https://www.youtube.com/embed/BOy2xDU1LC8'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['SKY','https://www.youtube.com/embed/YDvsBbKfLPA']];
 const africaFeeds=[['DW AFRICA','https://www.youtube.com/embed/W8nThq62Vb4'],['AFRICA LIVE','https://www.youtube.com/embed/E8PRZmDUiPw'],['AFRICA TODAY','https://www.youtube.com/embed/NQjabLGdP5g'],['AFRICA NOW','https://www.youtube.com/embed/Mv14aabg4mA'],['FR24','https://www.youtube.com/embed/iEpJwprxDdk'],['WAR ROOM','https://rumble.com/embed/v33aw1a/?pub=4jw3x3']];
@@ -195,6 +195,7 @@ renderOps(`
 <button class='command-btn' onclick="loadChannelHub(westernChannels,'WESTERN')">WESTERN NEWS</button><br><br>
 <button class='command-btn' onclick="loadChannelHub(easternChannels,'EASTERN')">EASTERN NEWS</button><br><br>
 <button class='command-btn' onclick="full=!full;idx=(idx+1)%6;renderNews()">FULL SCREEN</button><br><br>
+<button class='command-btn' onclick='exitFullScreen()'>EXIT FULL SCREEN</button><br><br>
 <button class='command-btn' onclick='loadPanAfricaHub()'>PAN AFRICAN NEWS</button>
 `,`<div style='display:flex;flex-direction:column;height:100%'><div id='channelBar'></div><div id='newsViewport' style='flex:1;min-height:0'></div></div>`);
 let currentFeeds=africa?africaFeeds:globalFeeds;
