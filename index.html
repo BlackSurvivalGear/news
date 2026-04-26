@@ -14,8 +14,8 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 .radar-logo,.footer-radar{width:72px;height:72px;border-radius:50%;border:1px solid #00ffee88;box-shadow:0 0 16px #00ffee55;animation:radarPulse 4s infinite;transition:box-shadow 0.3s ease}
 @keyframes radarPulse{50%{box-shadow:0 0 26px #00ffeeaa}}
 .brand-wrap:hover .radar-logo{box-shadow:0 0 30px #00ffee,0 0 60px #00ffee,0 0 100px #00ffee88;animation:none}
-.callsign{font-size:30px;font-weight:700;letter-spacing:2px;color:#06161c;text-shadow:0 0 18px #00ffee;transition:text-shadow 0.3s ease;cursor:default}
-.brand-wrap:hover .callsign{text-shadow:0 0 40px #00ffee,0 0 80px #00ffee,0 0 140px #00ffee,0 0 200px #00ffeedd,0 0 280px #00ffee,0 0 360px #00ffeeaa}
+.callsign{font-size:30px;font-weight:700;letter-spacing:2px;color:#06161c;text-shadow:0 0 18px #00ffee;transition:color 0.3s ease,text-shadow 0.3s ease;cursor:default}
+.brand-wrap:hover .callsign{color:#00ffee;text-shadow:0 0 30px #00ffee,0 0 60px #00ffee,0 0 100px #00ffee,0 0 160px #00ffee,0 0 240px #00ffeedd,0 0 340px #00ffeecc,0 0 460px #00ffeeaa}
 .subline{font-size:16px;letter-spacing:4px;color:#fff;text-shadow:0 0 10px #00ffee,0 0 20px #00ffee88;transition:font-size 0.3s ease,text-shadow 0.3s ease}
 .OSINT.PLATFORM-sub{font-size:16px;letter-spacing:4px;color:#00ffee;transition:font-size 0.3s ease,text-shadow 0.3s ease}
 .brand-wrap:hover .subline,.brand-wrap:hover .OSINT.PLATFORM-sub{font-size:22px;text-shadow:0 0 14px #00ffee,0 0 28px #00ffee,0 0 56px #00ffee88}
@@ -63,7 +63,7 @@ a{color:#00ffee;text-decoration:none}
 #splashScreen .splash-title{margin-top:20px;font-size:28px;font-weight:700;letter-spacing:3px;color:#06161c;text-shadow:0 0 30px #00ffee,0 0 60px #00ffee,0 0 100px #00ffee88}
 #splashScreen .splash-sub{font-size:13px;letter-spacing:6px;color:#00ffee;margin-top:6px;font-family:'Share Tech Mono'}
 .loader-wrap{margin-top:32px;width:260px;height:3px;background:#0a1a22;border-radius:2px;overflow:hidden}
-.loader-bar{width:0;height:100%;background:linear-gradient(90deg,#00ffee,#00ffeedd);border-radius:2px;animation:loadBar 2s ease-in-out forwards}
+.loader-bar{width:0;height:100%;background:linear-gradient(90deg,#00ffee,#00ffeedd);border-radius:2px;animation:loadBar 3s ease-in-out forwards}
 @keyframes loadBar{0%{width:0}100%{width:100%}}
 </style>
 </head>
@@ -108,7 +108,7 @@ a{color:#00ffee;text-decoration:none}
 <span class='version'>v1.0.0</span>
 </footer>
 <script>
-setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('fade-out');setTimeout(()=>s.remove(),500)},2000);
+setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('fade-out');setTimeout(()=>s.remove(),500)},3000);
 function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GMT','GMT / ZULU')}setInterval(updateClock,1000);updateClock();
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.startsWith('http://')))return'#';return esc(s).replace(/'/g,'&#39;')}
