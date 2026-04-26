@@ -24,7 +24,7 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 .command-btn:hover{background:#0c2430;transform:translateY(-2px);box-shadow:0 0 18px #00ffee88,0 0 36px #00ffee44,0 0 54px #00ffee22;text-shadow:0 0 8px #00ffee;border-color:#00ffeebb}
 .command-btn.active{background:#0c2430;box-shadow:0 0 14px #00ffee77,0 0 28px #00ffee44,0 0 42px #00ffee22;border-color:#00ffeedd;text-shadow:0 0 6px #00ffee}
 .drawer-toggle:hover{box-shadow:0 0 18px #00ffee88,0 0 36px #00ffee44;text-shadow:0 0 8px #00ffee;transform:translateY(-1px)}
-.channel:hover{background:#0c2430!important;box-shadow:0 0 12px #00ffee66;text-shadow:0 0 6px #00ffee}
+.channel:hover{background:#0c2430!important;box-shadow:0 0 12px #00ffee66;text-shadow:0 0 8px #00ffee;color:#00ffee}
 #gmtClock{text-align:center;color:#00ffee;width:100%}
 .header-right{display:flex;align-items:center;gap:6px;justify-content:flex-end}
 .market-box{padding:4px 8px;text-align:center}
@@ -38,7 +38,7 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 .breaking-link{display:inline-block;padding-right:60px;color:#ff8866;text-decoration:none;font-size:13px;font-family:'Share Tech Mono'}
 .breaking-link:hover{color:#ffaa88}
 #newsTickerWrap{display:flex;height:42px;background:#050b12;border-top:1px solid #00ffee55;border-bottom:1px solid #00ffee55;overflow:hidden}
-.channel{background:#071923;border:none;color:#7fd6df;padding:0 14px;cursor:pointer;font-family:'Share Tech Mono';font-size:12px;white-space:nowrap}.channel.active{background:#092631;color:#00ffee}
+.channel{background:#071923;border:none;color:#7fd6df;padding:0 14px;cursor:pointer;font-family:'Share Tech Mono';font-size:12px;white-space:nowrap;transition:background 0.15s,color 0.15s,text-shadow 0.15s,box-shadow 0.15s}.channel.active{background:#0c2430;color:#00ffee;font-weight:700;text-shadow:0 0 8px #00ffee;box-shadow:inset 0 -2px 0 #00ffee}
 .channel-wrap{display:flex;overflow-x:auto;flex-shrink:0}
 .ticker-window{flex:1;overflow:hidden;display:flex;align-items:center}.ticker-track{display:inline-flex;align-items:center;white-space:nowrap;padding-left:100%;animation:scroll 150s linear infinite;font-size:18px}
 @keyframes scroll{100%{transform:translateX(-100%)}}
@@ -181,7 +181,7 @@ menu+=`<button class='command-btn' onclick="regionFullScreen(currentRegionChanne
 menu+=`<button class='command-btn' onclick='exitFullScreen()'>EXIT FULL SCREEN</button>`;
 renderOps(menu,`<div style='display:flex;flex-direction:column;height:100%'><div id='hubChannelBar'></div><div id='channelHubViewport' style='flex:1;min-height:0;overflow-y:auto'></div></div>`);
 let bar="<div style='display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #00ffee44;background:#061018;flex-shrink:0'>";
-feeds.forEach((f,i)=>bar+=`<button onclick="switchHubChannel('${f[1]}')" class='channel' style='padding:6px 12px;border-right:1px solid #00ffee22;font-size:11px;white-space:nowrap'>${f[0]}</button>`);
+feeds.forEach((f,i)=>bar+=`<button onclick="document.querySelectorAll('#hubChannelBar .channel').forEach(x=>x.classList.remove('active'));this.classList.add('active');switchHubChannel('${f[1]}')" class='channel' style='padding:6px 12px;border-right:1px solid #00ffee22;font-size:11px;white-space:nowrap'>${f[0]}</button>`);
 bar+='</div>';
 let hubBar=document.getElementById('hubChannelBar');if(hubBar)hubBar.innerHTML=bar;
 let html=`<div style='height:100%;display:grid;grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);gap:2px'>`;
@@ -202,7 +202,7 @@ function exitFullScreen(){full=false;document.getElementById('opsBay').style.css
 function updateChannelBar(){let bar=document.getElementById('channelBar');if(bar)bar.innerHTML=renderChannelBar(globalFeeds)}
 function renderChannelBar(feeds){
 let bar="<div style='display:flex;gap:0;overflow-x:auto;border-bottom:1px solid #00ffee44;background:#061018;flex-shrink:0'>";
-feeds.forEach((f,i)=>bar+=`<button onclick='idx=${i};full=true;renderNews()' style='padding:6px 12px;background:none;border:none;border-right:1px solid #00ffee22;color:#00ffee;font-family:Share Tech Mono;font-size:11px;cursor:pointer;white-space:nowrap;transition:background 0.15s'onmouseover='this.style.background="#0c2430"'onmouseout='this.style.background="none"'>${f[0]}</button>`);
+feeds.forEach((f,i)=>bar+=`<button onclick="document.querySelectorAll('#channelBar .channel').forEach(x=>x.classList.remove('active'));this.classList.add('active');idx=${i};full=true;renderNews()" class='channel' style='padding:6px 12px;border-right:1px solid #00ffee22;font-size:11px;white-space:nowrap'>${f[0]}</button>`);
 return bar+'</div>'}
 function loadNews(){
 active('newsBtn');
