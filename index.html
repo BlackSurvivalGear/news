@@ -109,7 +109,7 @@ a{color:#00ffee;text-decoration:none}
 setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('fade-out');setTimeout(()=>s.remove(),500)},2000);
 function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GMT','GMT / ZULU')}setInterval(updateClock,1000);updateClock();
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
-function safeHref(u){let s=String(u).trim();return(s.startsWith('https://')||s.startsWith('http://'))?esc(s):'#'}
+function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.startsWith('http://')))return'#';return esc(s).replace(/'/g,'&#39;')}
 let collapsed=false,africa=false,full=false,idx=0;
 function active(id){document.querySelectorAll('.command-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function toggleDrawer(){collapsed=!collapsed;document.getElementById('opsShell').classList.toggle('collapsed',collapsed)}
