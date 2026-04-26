@@ -66,8 +66,11 @@ a{color:#00ffee;text-decoration:none}
 <div class='header-right'>
 <div class='market-box'><div>BRENT</div><div class='market-price'>105.3</div></div>
 <div class='market-box'><div>GOLD</div><div class='market-price'>4793</div></div>
-<div class='market-box'><div>SILVER</div><div class='market-price'>32.1</div></div>
 <div class='market-box'><div>BTC</div><div class='market-price'>93000</div></div>
+<div class='market-box'><div>BRENT</div><div id='brentPrice' class='market-price'>105.3</div></div>
+<div class='market-box'><div>GOLD</div><div id='goldPrice' class='market-price'>4793</div></div>
+<div class='market-box'><div>SILVER</div><div id='silverPrice' class='market-price'>32.1</div></div>
+<div class='market-box'><div>BTC</div><div id='btcPrice' class='market-price'>93000</div></div>
 </div>
 </header>
 <div id='newsTickerWrap'>
@@ -92,7 +95,9 @@ const africaFeeds=[['DW AFRICA','https://www.youtube.com/embed/W8nThq62Vb4'],['A
 const africaData={
 NorthAfrica:{Algeria:[['Algeria Press Service','https://www.aps.dz'],['El Watan','https://www.elwatan.com']],Egypt:[['Al-Ahram','https://english.ahram.org.eg'],['Al-Masry Al-Youm','https://www.almasryalyoum.com']],Libya:[['Libya Herald','https://www.libyaherald.com'],['Libyan Observer','https://www.libyanobserver.ly']],Mauritania:[['Al-Akhbar','https://alakhbar.info'],['Sahara Media','https://saharamedias.net']],Morocco:[['Le Matin','https://lematin.ma'],['MAP','https://www.map.ma']],Sudan:[['Sudan Tribune','https://sudantribune.com'],['Sudanese News','https://www.sudanews.net']],Tunisia:[['TAP','https://www.tap.info.tn'],['La Presse','https://lapresse.tn']]},
 WestAfrica:{AES:[['Sputnik Africa','https://en.sputniknews.africa/search/?query=AES'],['leFaso','https://www.lefaso.net'],['Burkina24','https://www.burkina24.com'],['Maliweb','https://www.maliweb.net'],['Le Republicain','https://www.maliweb.net'],['Niamey24','https://www.niameysoir.com'],['Le Sahel','https://www.lesahel.org']],Benin:[['Fraternite','https://www.fraternitebj.info'],['Le Matinal','https://www.lematinal.bj']],BurkinaFaso:[['leFaso','https://www.lefaso.net'],['Burkina24','https://www.burkina24.com']],CapeVerde:[['A Semana','https://www.asemana.cv'],['Santiago Magazine','https://www.santiagomagazine.cv']],Gambia:[['The Point','https://thepoint.gm'],['Foroyaa','https://foroyaa.net']],Ghana:[['Graphic','https://graphic.com.gh'],['Daily Guide','https://dailyguidenetwork.com']],Guinea:[['Guinee24','https://guinee24.com'],['Conakry Infos','https://www.conakryinfos.com']],GuineaBissau:[['O Gologb','https://www.ogologb.com'],['Novidades','https://novidades.gw']],IvoryCoast:[['Abidjan.net','https://www.abidjan.net'],['Le Patriote','https://www.lepatriote.net']],Liberia:[['New Dawn','https://www.newdawnliberia.com'],['FrontPageAfrica','https://www.frontpageafricaonline.com']],Mali:[['Maliweb','https://www.maliweb.net'],['Le Republicain','https://www.maliweb.net']],Niger:[['Niamey24','https://www.niameysoir.com'],['Le Sahel','https://www.lesahel.org']],Nigeria:[['Premium Times','https://www.premiumtimesng.com'],['Channels TV','https://www.channelstv.com'],['Leadership','https://leadership.ng'],['The Nation','https://thenationonlineng.net'],['ThisDay','https://www.thisdaylive.com'],['Tribune','https://tribuneonlineng.com'],['Naija News','https://www.naijanews.com'],['The Cable','https://www.thecable.ng'],['Daily Sun','https://www.sunnewsonline.com'],['Ripples','https://www.ripplesnigeria.com'],['Sahara Reporters','https://www.saharareporters.com'],['Vanguard','https://www.vanguardngr.com'],['Punch','https://www.punchng.com'],['Daily Trust','https://www.dailytrust.com']],Senegal:[['Le Soleil','https://www.lesoleil.sn'],['Seneweb','https://www.seneweb.com']],SierraLeone:[['Concord Times','https://www.concordtimes.com'],['Sierra Express','https://www.sierraexpressmedia.com']],Togo:[['Togo Presse','https://www.togopresse.tg'],['Le Correcteur','https://lecorrecteur.info']]},
-@@ -165,35 +166,36 @@ function loadFlight(){active('flightBtn');renderOps(`
+CentralAfrica:{Angola:[['Jornal de Angola','https://www.jornaldeangola.ao'],['O Pais','https://www.opais.co.ao']],Cameroon:[['Cameroon Tribune','https://www.cameroon-tribune.cm'],['CRTV','https://www.crtv.cm']],CentralAfricanRepublic:[['Journal de Bangui','https://www.journaldebangui.com'],['Radio Ndeke Luka','https://www.radiondekeluka.org']],Chad:[['Alwihda','https://www.alwihdainfo.com'],['Le Progres','https://www.leprogres.td']],Congo:[['Les Depeches','https://www.lesdepechesdebrazzaville.fr'],['Congo24','https://www.congo24.net']],DRCongo:[['Radio Okapi','https://www.radiookapi.net'],['Le Potentiel','https://www.lepotentiel.cd']],Gabon:[['Gabon24','https://www.gabon24.ga'],['Nouvelle Republique','https://www.lanouvellerepublique.com']],EquatorialGuinea:[['Diario Rombe','https://www.diariorombe.es'],['Radio Macuto','https://radiomacuto.net']],SaoTome:[['Tela Non','https://www.telanon.info'],['STP24','https://www.stp24.com']]},
+@@ -164,36 +165,41 @@ function loadFlight(){active('flightBtn');renderOps(`
+<button class='command-btn' onclick=\"setFlight('africa')\">AFRICA</button><br><br>
 <button class='command-btn' onclick=\"setFlight('europe')\">EUROPE</button><br><br>
 <button class='command-btn' onclick=\"setFlight('americas')\">AMERICAS</button><br><br>
 <button class='command-btn' onclick=\"setFlight('me')\">MIDDLE EAST</button><br><br>
@@ -119,12 +124,20 @@ loadTicker();loadNews();
 async function fetchPrices(){
 const mp=document.querySelectorAll('.market-price');
 try{const r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');const d=await r.json();mp[2].textContent=Math.round(parseFloat(d.price)).toLocaleString()}catch(e){}
-try{const r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');const d=await r.json();mp[3].textContent=Math.round(parseFloat(d.price)).toLocaleString()}catch(e){}
 try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');const d=await r.json();mp[1].textContent=Math.round(d['pax-gold'].usd).toLocaleString()}catch(e){}
-try{const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/SI=F?interval=1d&range=1d'));const w=await r.json();const d=JSON.parse(w.contents);mp[2].textContent=d.chart.result[0].meta.regularMarketPrice.toFixed(2)}catch(e){}
 try{const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d'));const w=await r.json();const d=JSON.parse(w.contents);mp[0].textContent=d.chart.result[0].meta.regularMarketPrice.toFixed(1)}catch(e){}
+const brentPrice=document.getElementById('brentPrice');
+const goldPrice=document.getElementById('goldPrice');
+const silverPrice=document.getElementById('silverPrice');
+const btcPrice=document.getElementById('btcPrice');
+
+try{const r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');const d=await r.json();if(d&&d.price)btcPrice.textContent=Math.round(parseFloat(d.price)).toLocaleString()}catch(e){}
+try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');const d=await r.json();if(d&&d['pax-gold']&&typeof d['pax-gold'].usd==='number')goldPrice.textContent=Math.round(d['pax-gold'].usd).toLocaleString()}catch(e){}
+try{const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/SI=F?interval=1d&range=1d'));const w=await r.json();const d=JSON.parse(w.contents||'{}');const p=d?.chart?.result?.[0]?.meta?.regularMarketPrice;if(typeof p==='number')silverPrice.textContent=p.toFixed(2)}catch(e){}
+try{const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d'));const w=await r.json();const d=JSON.parse(w.contents||'{}');const p=d?.chart?.result?.[0]?.meta?.regularMarketPrice;if(typeof p==='number')brentPrice.textContent=p.toFixed(1)}catch(e){}
 }
 fetchPrices();setInterval(fetchPrices,60000);
 </script>
 </body>
 </html>
+
