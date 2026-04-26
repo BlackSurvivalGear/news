@@ -24,7 +24,6 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 .command-btn.active,.command-btn:hover{background:#0c2430}
 #gmtClock{text-align:center;color:#00ffee;width:100%}
 .header-right{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.header-right{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .market-box{padding:10px;border:1px solid #00ffee66;text-align:center}
 .market-price{font-size:24px;color:#00ffee}
 #newsTickerWrap{display:flex;height:42px;background:#050b12;border-top:1px solid #00ffee55;border-bottom:1px solid #00ffee55;overflow:hidden}
@@ -67,10 +66,6 @@ a{color:#00ffee;text-decoration:none}
 <div class='market-box'><div>BRENT</div><div class='market-price'>105.3</div></div>
 <div class='market-box'><div>GOLD</div><div class='market-price'>4793</div></div>
 <div class='market-box'><div>BTC</div><div class='market-price'>93000</div></div>
-<div class='market-box'><div>BRENT</div><div id='brentPrice' class='market-price'>105.3</div></div>
-<div class='market-box'><div>GOLD</div><div id='goldPrice' class='market-price'>4793</div></div>
-<div class='market-box'><div>SILVER</div><div id='silverPrice' class='market-price'>32.1</div></div>
-<div class='market-box'><div>BTC</div><div id='btcPrice' class='market-price'>93000</div></div>
 </div>
 </header>
 <div id='newsTickerWrap'>
@@ -96,7 +91,76 @@ const africaData={
 NorthAfrica:{Algeria:[['Algeria Press Service','https://www.aps.dz'],['El Watan','https://www.elwatan.com']],Egypt:[['Al-Ahram','https://english.ahram.org.eg'],['Al-Masry Al-Youm','https://www.almasryalyoum.com']],Libya:[['Libya Herald','https://www.libyaherald.com'],['Libyan Observer','https://www.libyanobserver.ly']],Mauritania:[['Al-Akhbar','https://alakhbar.info'],['Sahara Media','https://saharamedias.net']],Morocco:[['Le Matin','https://lematin.ma'],['MAP','https://www.map.ma']],Sudan:[['Sudan Tribune','https://sudantribune.com'],['Sudanese News','https://www.sudanews.net']],Tunisia:[['TAP','https://www.tap.info.tn'],['La Presse','https://lapresse.tn']]},
 WestAfrica:{AES:[['Sputnik Africa','https://en.sputniknews.africa/search/?query=AES'],['leFaso','https://www.lefaso.net'],['Burkina24','https://www.burkina24.com'],['Maliweb','https://www.maliweb.net'],['Le Republicain','https://www.maliweb.net'],['Niamey24','https://www.niameysoir.com'],['Le Sahel','https://www.lesahel.org']],Benin:[['Fraternite','https://www.fraternitebj.info'],['Le Matinal','https://www.lematinal.bj']],BurkinaFaso:[['leFaso','https://www.lefaso.net'],['Burkina24','https://www.burkina24.com']],CapeVerde:[['A Semana','https://www.asemana.cv'],['Santiago Magazine','https://www.santiagomagazine.cv']],Gambia:[['The Point','https://thepoint.gm'],['Foroyaa','https://foroyaa.net']],Ghana:[['Graphic','https://graphic.com.gh'],['Daily Guide','https://dailyguidenetwork.com']],Guinea:[['Guinee24','https://guinee24.com'],['Conakry Infos','https://www.conakryinfos.com']],GuineaBissau:[['O Gologb','https://www.ogologb.com'],['Novidades','https://novidades.gw']],IvoryCoast:[['Abidjan.net','https://www.abidjan.net'],['Le Patriote','https://www.lepatriote.net']],Liberia:[['New Dawn','https://www.newdawnliberia.com'],['FrontPageAfrica','https://www.frontpageafricaonline.com']],Mali:[['Maliweb','https://www.maliweb.net'],['Le Republicain','https://www.maliweb.net']],Niger:[['Niamey24','https://www.niameysoir.com'],['Le Sahel','https://www.lesahel.org']],Nigeria:[['Premium Times','https://www.premiumtimesng.com'],['Channels TV','https://www.channelstv.com'],['Leadership','https://leadership.ng'],['The Nation','https://thenationonlineng.net'],['ThisDay','https://www.thisdaylive.com'],['Tribune','https://tribuneonlineng.com'],['Naija News','https://www.naijanews.com'],['The Cable','https://www.thecable.ng'],['Daily Sun','https://www.sunnewsonline.com'],['Ripples','https://www.ripplesnigeria.com'],['Sahara Reporters','https://www.saharareporters.com'],['Vanguard','https://www.vanguardngr.com'],['Punch','https://www.punchng.com'],['Daily Trust','https://www.dailytrust.com']],Senegal:[['Le Soleil','https://www.lesoleil.sn'],['Seneweb','https://www.seneweb.com']],SierraLeone:[['Concord Times','https://www.concordtimes.com'],['Sierra Express','https://www.sierraexpressmedia.com']],Togo:[['Togo Presse','https://www.togopresse.tg'],['Le Correcteur','https://lecorrecteur.info']]},
 CentralAfrica:{Angola:[['Jornal de Angola','https://www.jornaldeangola.ao'],['O Pais','https://www.opais.co.ao']],Cameroon:[['Cameroon Tribune','https://www.cameroon-tribune.cm'],['CRTV','https://www.crtv.cm']],CentralAfricanRepublic:[['Journal de Bangui','https://www.journaldebangui.com'],['Radio Ndeke Luka','https://www.radiondekeluka.org']],Chad:[['Alwihda','https://www.alwihdainfo.com'],['Le Progres','https://www.leprogres.td']],Congo:[['Les Depeches','https://www.lesdepechesdebrazzaville.fr'],['Congo24','https://www.congo24.net']],DRCongo:[['Radio Okapi','https://www.radiookapi.net'],['Le Potentiel','https://www.lepotentiel.cd']],Gabon:[['Gabon24','https://www.gabon24.ga'],['Nouvelle Republique','https://www.lanouvellerepublique.com']],EquatorialGuinea:[['Diario Rombe','https://www.diariorombe.es'],['Radio Macuto','https://radiomacuto.net']],SaoTome:[['Tela Non','https://www.telanon.info'],['STP24','https://www.stp24.com']]},
-@@ -164,36 +165,41 @@ function loadFlight(){active('flightBtn');renderOps(`
+EastAfrica:{Burundi:[['Iwacu','https://www.iwacu-burundi.org'],['Renouveau','https://www.renouveau.digital']],Djibouti:[['La Nation','https://www.lanation.dj'],['Djibouti24','https://www.djibouti24.com']],Eritrea:[['ENA','http://www.shabait.com'],['Asmarino','https://www.asmarino.com']],Ethiopia:[['Addis Standard','https://addisstandard.com'],['Reporter','https://www.ethiopianreporter.com']],Kenya:[['Nation','https://nation.africa'],['Capital FM','https://www.capitalfm.co.ke']],Madagascar:[['Midi Madagasikara','https://www.midi-madagasikara.mg'],["L'Express",'https://lexpress.mg']],Malawi:[['Nation MW','https://www.mwnation.com'],['Malawi24','https://malawi24.com']],Mozambique:[['Noticias','https://www.jornalnoticias.co.mz'],['O Pais','https://www.opais.co.mz']],Rwanda:[['New Times','https://www.newtimes.co.rw'],['Rwanda Today','https://www.rwandatoday.africa']],Somalia:[['Radio Muqdisho','https://www.radiomuqdisho.so'],['SONNA','https://sonna.so']],SouthSudan:[['Juba Monitor','https://www.jubamonitor.com'],['Radio Tamazuj','https://radiotamazuj.org']],Tanzania:[['Citizen','https://www.thecitizen.co.tz'],['Daily News','https://www.dailynews.co.tz']],Uganda:[['New Vision','https://www.newvision.co.ug'],['Observer','https://www.observer.ug']],Zambia:[['Daily Mail','https://www.daily-mail.co.zm'],['Post','https://www.postzambia.com']],Zimbabwe:[['Herald','https://www.herald.co.zw'],['NewsDay','https://www.newsday.co.zw']]},
+SouthernAfrica:{Botswana:[['Mmegi','https://www.mmegi.bw'],['Patriot','https://www.thepatriot.co.bw']],Lesotho:[['Lesotho Times','https://lestimes.com'],['Public Eye','https://publiceyenews.com']],Namibia:[['New Era','https://www.ne.com.na'],['Namibian','https://www.namibian.com.na']],SouthAfrica:[['SABC News','https://www.sabcnews.com'],['News24','https://www.news24.com'],['Mail & Guardian','https://mg.co.za']],Eswatini:[['Observer','https://www.observer.org.sz'],['Times','https://www.times.co.sz']]}
+};
+
+function renderNews(){
+let feeds=africaFeeds;
+if(africa===false)feeds=globalFeeds;
+let viewport=document.getElementById('newsViewport');
+if(full){viewport.innerHTML=`<iframe src='${feeds[idx][1]}'></iframe>`;return}
+let h="<div style='height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:2px'>";
+feeds.forEach(f=>h+=`<div class='feed-panel'><div class='feed-label'>${f[0]}</div><iframe src='${f[1]}'></iframe></div>`);
+viewport.innerHTML=h+'</div>'}
+
+function loadPanAfricaHub(){
+active('newsBtn');
+renderOps(`
+<button class='command-btn' onclick='loadNews()'>LIVE NEWS GRID</button><br><br>
+<button class='command-btn' onclick="loadRegionFeeds('NorthAfrica')">NORTH AFRICA</button><br><br>
+<button class='command-btn' onclick="loadRegionFeeds('WestAfrica')">WEST AFRICA</button><br><br>
+<button class='command-btn' onclick="loadRegionFeeds('CentralAfrica')">CENTRAL AFRICA</button><br><br>
+<button class='command-btn' onclick="loadRegionFeeds('EastAfrica')">EAST AFRICA</button><br><br>
+<button class='command-btn' onclick="loadRegionFeeds('SouthernAfrica')">SOUTHERN AFRICA</button>
+`,`<div id='panAfricaViewport' style='height:100%;overflow-y:auto'></div>`);
+loadRegionFeeds('WestAfrica');
+}
+function loadRegionFeeds(region){
+const countries=africaData[region];
+let html="<div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:14px'>";
+Object.entries(countries).forEach(([country,sources])=>{
+html+=`<div class='feed-panel'><div class='feed-label'>${country}</div><div style='padding:54px 14px'>`;
+sources.forEach(src=>html+=`<p style='margin:12px 0'><a href='${src[1]}' target='_blank'>${src[0]}</a></p>`);
+html+='</div></div>'});
+html+='</div>';
+document.getElementById('panAfricaViewport').innerHTML=html;
+}
+
+function loadNews(){
+active('newsBtn');
+renderOps(`
+<button class='command-btn' onclick="africa=false;full=false;renderNews()">GLOBAL NEWS</button><br><br>
+<button class='command-btn' onclick="africa=true;full=false;renderNews()">AFRICA NEWS</button><br><br>
+<button class='command-btn' onclick='loadPanAfricaHub()'>PAN AFRICA</button><br><br>
+<button class='command-btn' onclick="full=!full;idx=(idx+1)%6;renderNews()">FULL SCREEN</button>
+`,`<div id='newsViewport' style='height:100%'></div>`);
+renderNews();
+}
+
+function setConflict(z){const m={iran:'https://iran.liveuamap.com/',sudan:'https://sudan.liveuamap.com/',nigeria:'https://nigeria.liveuamap.com/',sahel:'https://sahel.liveuamap.com/',drcongo:'https://drcongo.liveuamap.com/',ethiopia:'https://ethiopia.liveuamap.com/',somalia:'https://somalia.liveuamap.com/'};document.getElementById('opsViewport').innerHTML=`<iframe class='map-frame' src='${m[z]}'></iframe>`}
+function loadConflict(){active('mapBtn');renderOps(`
+<button class='command-btn' onclick=\"setConflict('iran')\">MIDDLE EAST</button><br><br>
+<button class='command-btn' onclick=\"setConflict('sudan')\">SUDAN</button><br><br>
+<button class='command-btn' onclick=\"setConflict('nigeria')\">NIGERIA</button><br><br>
+<button class='command-btn' onclick=\"setConflict('sahel')\">SAHEL</button><br><br>
+<button class='command-btn' onclick=\"setConflict('drcongo')\">DR CONGO</button><br><br>
+<button class='command-btn' onclick=\"setConflict('ethiopia')\">ETHIOPIA</button><br><br>
+<button class='command-btn' onclick=\"setConflict('somalia')\">SOMALIA</button>
+`,`<iframe class='map-frame' src='https://iran.liveuamap.com/'></iframe>`)}
+function setMarine(z){const f={hormuz:'https://www.marinetraffic.com/en/ais/embed/zoom:6/centery:25.9/centerx:57.6/maptype:4',bab:'https://www.marinetraffic.com/en/ais/embed/zoom:6/centery:12.6/centerx:43.3/maptype:4',suez:'https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:30.5/centerx:32.3/maptype:4',bosporus:'https://www.marinetraffic.com/en/ais/home/centerx:29/centery:41/zoom:8/maptype:4',malacca:'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:3.5/centerx:100.5/maptype:4',panama:'https://www.marinetraffic.com/en/ais/embed/zoom:8/centery:9.1/centerx:-79.7/maptype:4',gibraltar:'https://www.marinetraffic.com/en/ais/home/centerx:-5.5/centery:36/zoom:8/maptype:4'};document.getElementById('marineFrame').innerHTML=`<iframe class='map-frame' src='${f[z]}'></iframe>`}
+function loadMarine(){active('marineBtn');renderOps(`
+<button class='command-btn' onclick=\"setMarine('hormuz')\">HORMUZ</button><br><br>
+<button class='command-btn' onclick=\"setMarine('bab')\">BAB EL MANDEB</button><br><br>
+<button class='command-btn' onclick=\"setMarine('suez')\">SUEZ</button><br><br>
+<button class='command-btn' onclick=\"setMarine('bosporus')\">BOSPORUS</button><br><br>
+<button class='command-btn' onclick=\"setMarine('malacca')\">MALACCA</button><br><br>
+<button class='command-btn' onclick=\"setMarine('panama')\">PANAMA</button><br><br>
+<button class='command-btn' onclick=\"setMarine('gibraltar')\">GIBRALTAR</button>
+`,`<div id='marineFrame' style='height:100%'></div>`);setMarine('hormuz')}
+function setFlight(z){const m={global:'https://globe.adsbexchange.com/',africa:'https://globe.adsbexchange.com/?lat=5&lon=20&zoom=3',europe:'https://globe.adsbexchange.com/?lat=50&lon=10&zoom=4',americas:'https://globe.adsbexchange.com/?lat=25&lon=-90&zoom=3',me:'https://globe.adsbexchange.com/?lat=26&lon=45&zoom=5',asia:'https://globe.adsbexchange.com/?lat=25&lon=100&zoom=3'};document.getElementById('flightFrame').innerHTML=`<iframe class='map-frame' src='${m[z]}'></iframe>`}
+function loadFlight(){active('flightBtn');renderOps(`
+<button class='command-btn' onclick=\"setFlight('global')\">GLOBAL</button><br><br>
 <button class='command-btn' onclick=\"setFlight('africa')\">AFRICA</button><br><br>
 <button class='command-btn' onclick=\"setFlight('europe')\">EUROPE</button><br><br>
 <button class='command-btn' onclick=\"setFlight('americas')\">AMERICAS</button><br><br>
@@ -126,18 +190,10 @@ const mp=document.querySelectorAll('.market-price');
 try{const r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');const d=await r.json();mp[2].textContent=Math.round(parseFloat(d.price)).toLocaleString()}catch(e){}
 try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');const d=await r.json();mp[1].textContent=Math.round(d['pax-gold'].usd).toLocaleString()}catch(e){}
 try{const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d'));const w=await r.json();const d=JSON.parse(w.contents);mp[0].textContent=d.chart.result[0].meta.regularMarketPrice.toFixed(1)}catch(e){}
-const brentPrice=document.getElementById('brentPrice');
-const goldPrice=document.getElementById('goldPrice');
-const silverPrice=document.getElementById('silverPrice');
-const btcPrice=document.getElementById('btcPrice');
-
-try{const r=await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');const d=await r.json();if(d&&d.price)btcPrice.textContent=Math.round(parseFloat(d.price)).toLocaleString()}catch(e){}
-try{const r=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold&vs_currencies=usd');const d=await r.json();if(d&&d['pax-gold']&&typeof d['pax-gold'].usd==='number')goldPrice.textContent=Math.round(d['pax-gold'].usd).toLocaleString()}catch(e){}
-try{const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/SI=F?interval=1d&range=1d'));const w=await r.json();const d=JSON.parse(w.contents||'{}');const p=d?.chart?.result?.[0]?.meta?.regularMarketPrice;if(typeof p==='number')silverPrice.textContent=p.toFixed(2)}catch(e){}
-try{const r=await fetch('https://api.allorigins.win/get?url='+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?interval=1d&range=1d'));const w=await r.json();const d=JSON.parse(w.contents||'{}');const p=d?.chart?.result?.[0]?.meta?.regularMarketPrice;if(typeof p==='number')brentPrice.textContent=p.toFixed(1)}catch(e){}
 }
 fetchPrices();setInterval(fetchPrices,60000);
 </script>
 </body>
 </html>
+
 
