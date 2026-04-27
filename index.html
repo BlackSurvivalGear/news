@@ -396,8 +396,8 @@ function loadMarkets(){active('marketsBtn');renderOps(`
 `,`<div id='marketFrame' style='height:100%'></div>`);marketView('overview')}
 function loadAfricanExchange(){
 const f=document.getElementById('marketFrame');
-f.innerHTML=`<div style='height:100%;overflow-y:auto;padding:20px;background:#061018;font-family:Rajdhani,sans-serif'>
-<div style='display:flex;gap:20px;width:100%;max-width:1200px;margin:auto;flex-wrap:wrap'>
+f.innerHTML=`<div style='height:100%;overflow-y:auto;padding:20px;background:#061018;font-family:Rajdhani,sans-serif;display:flex;align-items:flex-start;justify-content:center'>
+<div style='display:flex;gap:20px;width:100%;max-width:1200px;flex-wrap:wrap;justify-content:center'>
 <div style='flex:1;min-width:300px;max-width:450px'>
 <h2 style='text-align:center;color:#00ffee;font-family:Share Tech Mono,monospace;letter-spacing:2px;text-shadow:0 0 10px #00ffee88;margin-bottom:16px'>AFRICAN CURRENCY CONVERTER</h2>
 <input type='number' id='exchAmount' placeholder='Enter amount' style='width:100%;padding:10px;margin:8px 0;font-size:16px;border:1px solid #00ffee44;border-radius:5px;background:#081821;color:#00ffee;font-family:Share Tech Mono,monospace'>
@@ -429,7 +429,7 @@ const exchAfricanCurrencies=[{code:'NGN',country:'Nigeria'},{code:'XOF',country:
 function exchPopulate(){const all=[...exchFixedCurrencies,...exchAfricanCurrencies];const opts=all.map(c=>`<option value="${c.code}">${c.code} - ${c.country}</option>`).join('');const f=document.getElementById('exchFrom');const t=document.getElementById('exchTo');if(f&&t){f.innerHTML=opts;t.innerHTML=opts;f.value='USD';t.value='NGN'}}
 async function exchFetchRates(base){const r=await fetch('https://api.exchangerate-api.com/v4/latest/'+base);const d=await r.json();return d.rates}
 async function exchUpdateTable(){try{const rates=await exchFetchRates('NGN');const pairs={gbp:'GBP',usd:'USD',cad:'CAD',eur:'EUR',rub:'RUB',cny:'CNY',zar:'ZAR'};for(const[id,code]of Object.entries(pairs)){const el=document.getElementById('rate-'+id);if(el){const rate=rates[code];el.textContent=rate?(1/rate).toFixed(2):'0.00'}}}catch(e){}}
-async function exchConvert(){const amount=parseFloat(document.getElementById('exchAmount').value);const from=document.getElementById('exchFrom').value;const to=document.getElementById('exchTo').value;const res=document.getElementById('exchResult');const err=document.getElementById('exchError');if(isNaN(amount)||amount<=0){err.textContent='Please enter a valid amount.';res.textContent='';return}err.textContent='';try{const rates=await exchFetchRates(from);const rate=rates[to];if(rate){res.textContent=amount+' '+from+' = '+(amount*rate).toFixed(2)+' '+to}else{res.textContent='Conversion not available.'}}catch(e){err.textContent='Failed to fetch rates.'}}
+async function exchConvert(){const amount=parseFloat(document.getElementById('exchAmount').value);const from=document.getElementById('exchFrom').value;const to=document.getElementById('exchTo').value;const res=document.getElementById('exchResult');const err=document.getElementById('exchError');if(isNaN(amount)||amount<=0){err.textContent='Please enter a valid amount.';res.textContent='';return}err.textContent='';res.textContent='';try{const rates=await exchFetchRates(from);const rate=rates[to];if(rate){res.textContent=amount+' '+from+' = '+(amount*rate).toFixed(2)+' '+to}else{res.textContent='Conversion not available.'}}catch(e){res.textContent='';err.textContent='Failed to fetch rates.'}}
 
 newsBtn.onclick=loadNews;mapBtn.onclick=loadConflict;marineBtn.onclick=loadMarine;flightBtn.onclick=loadFlight;marketsBtn.onclick=loadMarkets;
 const rss=[
