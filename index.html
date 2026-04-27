@@ -261,6 +261,62 @@ atwToggleBtn.addEventListener('click',()=>{atwShowAll=!atwShowAll;atwToggleBtn.t
 atwSelect.addEventListener('change',()=>{const idx=atwSelect.value;if(idx!==''){let card=document.getElementById('atw-card-'+idx);if(!card){atwShowAll=true;atwToggleBtn.textContent='Collapse List';atwRender();atwUpdateTimes();card=document.getElementById('atw-card-'+idx)}if(card){card.classList.add('highlight');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('highlight'),2000)}}});
 atwHourFormat.addEventListener('change',atwUpdateTimes);
 atwRender();atwUpdateTimes()}
+const liveuamapUrls={
+'Algeria':'https://algeria.liveuamap.com/',
+'Angola':'https://drcongo.liveuamap.com/',
+'Benin':'https://sahel.liveuamap.com/',
+'Botswana':'https://southafrica.liveuamap.com/',
+'Burkina Faso':'https://sahel.liveuamap.com/',
+'Burundi':'https://drcongo.liveuamap.com/',
+'Cameroon':'https://cameroon.liveuamap.com/',
+'Cape Verde':'https://sahel.liveuamap.com/',
+'Central African Republic':'https://centralafrica.liveuamap.com/',
+'Chad':'https://sahel.liveuamap.com/',
+'Comoros':'https://tanzania.liveuamap.com/',
+'Congo (Brazzaville)':'https://drcongo.liveuamap.com/',
+'Congo (Kinshasa)':'https://drcongo.liveuamap.com/',
+"C\u00f4te d'Ivoire":'https://sahel.liveuamap.com/',
+'Djibouti':'https://somalia.liveuamap.com/',
+'Egypt':'https://egypt.liveuamap.com/',
+'Equatorial Guinea':'https://cameroon.liveuamap.com/',
+'Eritrea':'https://ethiopia.liveuamap.com/',
+'Eswatini':'https://southafrica.liveuamap.com/',
+'Ethiopia':'https://ethiopia.liveuamap.com/',
+'Gabon':'https://cameroon.liveuamap.com/',
+'Gambia':'https://sahel.liveuamap.com/',
+'Ghana':'https://sahel.liveuamap.com/',
+'Guinea':'https://sahel.liveuamap.com/',
+'Guinea-Bissau':'https://sahel.liveuamap.com/',
+'Kenya':'https://kenya.liveuamap.com/',
+'Lesotho':'https://southafrica.liveuamap.com/',
+'Liberia':'https://sahel.liveuamap.com/',
+'Libya':'https://libya.liveuamap.com/',
+'Madagascar':'https://tanzania.liveuamap.com/',
+'Malawi':'https://tanzania.liveuamap.com/',
+'Mali':'https://sahel.liveuamap.com/',
+'Mauritania':'https://sahel.liveuamap.com/',
+'Mauritius':'https://southafrica.liveuamap.com/',
+'Morocco':'https://algeria.liveuamap.com/',
+'Mozambique':'https://tanzania.liveuamap.com/',
+'Namibia':'https://southafrica.liveuamap.com/',
+'Niger':'https://sahel.liveuamap.com/',
+'Nigeria':'https://nigeria.liveuamap.com/',
+'Rwanda':'https://drcongo.liveuamap.com/',
+"S\u00e3o Tom\u00e9 and Pr\u00edncipe":'https://cameroon.liveuamap.com/',
+'Senegal':'https://sahel.liveuamap.com/',
+'Seychelles':'https://kenya.liveuamap.com/',
+'Sierra Leone':'https://sahel.liveuamap.com/',
+'Somalia':'https://somalia.liveuamap.com/',
+'South Africa':'https://southafrica.liveuamap.com/',
+'South Sudan':'https://sudan.liveuamap.com/',
+'Sudan':'https://sudan.liveuamap.com/',
+'Tanzania':'https://tanzania.liveuamap.com/',
+'Togo':'https://sahel.liveuamap.com/',
+'Tunisia':'https://tunisia.liveuamap.com/',
+'Uganda':'https://uganda.liveuamap.com/',
+'Zambia':'https://zimbabwe.liveuamap.com/',
+'Zimbabwe':'https://zimbabwe.liveuamap.com/'
+};
 async function atwViewCountry(name,iso){
 const w=document.getElementById('africaTimeWidget');
 w.innerHTML=`<div style='text-align:center;padding:40px;color:#00ffee;font-family:Share Tech Mono,monospace'>Loading ${name}...</div>`;
@@ -285,7 +341,8 @@ const gmap=coords.length?`https://www.google.com/maps/search/?q=${coords[0]},${c
 const passIdx=`https://www.passportindex.org/passport/${name.toLowerCase().replace(/ /g,'-')}/`;
 let exRate='N/A';
 try{const er=await fetch('https://api.exchangerate-api.com/v4/latest/USD');const ed=await er.json();if(ed.rates&&ed.rates[currTicker])exRate=ed.rates[currTicker].toFixed(2)}catch(e){}
-const mapEmbed=coords.length?`<iframe src='https://maps.google.com/maps?q=${coords[0]},${coords[1]}&z=5&output=embed' style='width:100%;height:250px;border:none;border-radius:8px;margin-top:12px'></iframe>`:'';
+const liveMapUrl=liveuamapUrls[name]||'https://africa.liveuamap.com/';
+const mapEmbed=`<a href='${liveMapUrl}' target='_blank' style='display:block;margin-top:12px;padding:14px;background:#081821;border:1px solid #00ffee66;border-radius:8px;text-align:center;text-decoration:none;color:#00ffee;font-family:Share Tech Mono,monospace;font-size:15px;transition:background 0.15s,box-shadow 0.15s'onmouseover="this.style.background='#0c2430';this.style.boxShadow='0 0 18px #00ffee88'"onmouseout="this.style.background='#081821';this.style.boxShadow='none'">🗺️ OPEN LIVE CONFLICT MAP — ${liveMapUrl.replace('https://','').replace('.liveuamap.com/','').toUpperCase()}</a>`;
 w.innerHTML=`<div style='padding:12px'>
 <button class='atw-small-button' onclick='atwRestoreWidget()' style='margin-bottom:16px'>⬅ BACK</button>
 <div style='display:flex;align-items:center;gap:12px;margin-bottom:16px'><img src='${flag}' style='width:60px;border-radius:4px'><div><h2 style='margin:0;color:#00ffee;font-family:Share Tech Mono,monospace'>${name}</h2><div style='color:#7fd6df;font-size:13px'>${region} — ${subregion}</div></div></div>
