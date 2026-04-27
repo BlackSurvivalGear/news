@@ -155,7 +155,7 @@ a{color:#00ffee;text-decoration:none}
 setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('fade-out');setTimeout(()=>s.remove(),500)},3000);
 let headerTz=null,headerTzLabel='';
 function updateClock(){const now=new Date();if(headerTz){const time=new Intl.DateTimeFormat('en-GB',{timeZone:headerTz,weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);gmtClock.textContent=time+' | '+headerTzLabel}else{gmtClock.textContent=now.toUTCString().replace('GMT','GMT / ZULU')}}setInterval(updateClock,1000);updateClock();
-function setHeaderTime(tz,label){headerTz=tz;headerTzLabel=label;updateClock();atwRender()}
+function setHeaderTime(tz,label){headerTz=tz;headerTzLabel=label;updateClock();atwRender();atwUpdateTimes()}
 
 let africaTimePanelOpen=false,africaTimeHideTimer=null;
 function toggleAfricaTime(){const p=document.getElementById('africaTimePanel');if(africaTimePanelOpen){p.classList.remove('open');africaTimePanelOpen=false}else{p.classList.add('open');africaTimePanelOpen=true;atwRender();atwUpdateTimes()}}
