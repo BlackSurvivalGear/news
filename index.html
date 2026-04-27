@@ -342,7 +342,7 @@ const passIdx=`https://www.passportindex.org/passport/${name.toLowerCase().repla
 let exRate='N/A';
 try{const er=await fetch('https://api.exchangerate-api.com/v4/latest/USD');const ed=await er.json();if(ed.rates&&ed.rates[currTicker])exRate=ed.rates[currTicker].toFixed(2)}catch(e){}
 const liveMapUrl=liveuamapUrls[name]||'https://africa.liveuamap.com/';
-const mapEmbed=`<a href='${liveMapUrl}' target='_blank' style='display:block;margin-top:12px;padding:14px;background:#081821;border:1px solid #00ffee66;border-radius:8px;text-align:center;text-decoration:none;color:#00ffee;font-family:Share Tech Mono,monospace;font-size:15px;transition:background 0.15s,box-shadow 0.15s'onmouseover="this.style.background='#0c2430';this.style.boxShadow='0 0 18px #00ffee88'"onmouseout="this.style.background='#081821';this.style.boxShadow='none'">🗺️ OPEN LIVE CONFLICT MAP — ${liveMapUrl.replace('https://','').replace('.liveuamap.com/','').toUpperCase()}</a>`;
+const mapEmbed=`<iframe src='${liveMapUrl}' class='map-frame' style='width:100%;height:350px;border:none;border-radius:8px;margin-top:12px'></iframe>`;
 w.innerHTML=`<div style='padding:12px'>
 <button class='atw-small-button' onclick='atwRestoreWidget()' style='margin-bottom:16px'>⬅ BACK</button>
 <div style='display:flex;align-items:center;gap:12px;margin-bottom:16px'><img src='${flag}' style='width:60px;border-radius:4px'><div><h2 style='margin:0;color:#00ffee;font-family:Share Tech Mono,monospace'>${name}</h2><div style='color:#7fd6df;font-size:13px'>${region} — ${subregion}</div></div></div>
