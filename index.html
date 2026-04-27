@@ -44,6 +44,9 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 .atw-toggle-container{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
 .atw-small-button{background:#081821;border:1px solid #00ffee66;color:#00ffee;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold;flex-grow:1;font-family:'Share Tech Mono',monospace;transition:background 0.15s,box-shadow 0.15s,text-shadow 0.15s}
 .atw-small-button:hover{background:#0c2430;box-shadow:0 0 18px #00ffee88;text-shadow:0 0 8px #00ffee}
+.atw-set-btn{background:none;border:1px solid #00ffee55;color:#00ffee;padding:4px 10px;border-radius:4px;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:11px;margin-top:6px;transition:background 0.15s,box-shadow 0.15s}
+.atw-set-btn:hover{background:#0c2430;box-shadow:0 0 12px #00ffee66}
+.atw-set-btn.active{background:#00ffee;color:#061018;font-weight:bold}
 #atwSearchBox{flex-grow:3}
 .header-right{display:flex;align-items:center;gap:6px;justify-content:flex-end}
 .market-box{padding:4px 8px;text-align:center}
@@ -123,6 +126,7 @@ a{color:#00ffee;text-decoration:none}
 <option value='24'>24-hour</option>
 </select>
 <button class='atw-small-button' id='atwToggleShow'>Show All Countries</button>
+<button class='atw-small-button' id='atwResetGmt' onclick="setHeaderTime(null,'')">RESET TO GMT</button>
 </div>
 <select id='atwCountrySelect'><option value=''>Jump to country...</option></select>
 <div class='atw-grid' id='atwCityGrid'></div>
@@ -149,7 +153,9 @@ a{color:#00ffee;text-decoration:none}
 </footer>
 <script>
 setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('fade-out');setTimeout(()=>s.remove(),500)},3000);
-function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GMT','GMT / ZULU')}setInterval(updateClock,1000);updateClock();
+let headerTz=null,headerTzLabel='';
+function updateClock(){const now=new Date();if(headerTz){const time=new Intl.DateTimeFormat('en-GB',{timeZone:headerTz,weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);gmtClock.textContent=time+' | '+headerTzLabel}else{gmtClock.textContent=now.toUTCString().replace('GMT','GMT / ZULU')}}setInterval(updateClock,1000);updateClock();
+function setHeaderTime(tz,label){headerTz=tz;headerTzLabel=label;updateClock();atwRender()}
 
 let africaTimePanelOpen=false,africaTimeHideTimer=null;
 function toggleAfricaTime(){const p=document.getElementById('africaTimePanel');if(africaTimePanelOpen){p.classList.remove('open');africaTimePanelOpen=false}else{p.classList.add('open');africaTimePanelOpen=true;atwRender();atwUpdateTimes()}}
@@ -222,7 +228,7 @@ function atwRender(){
 const filtered=atwGetFiltered();
 const list=atwShowAll?filtered:filtered.slice(0,atwTopCount);
 atwGrid.innerHTML='';
-list.forEach((c,i)=>{const card=document.createElement('div');card.className='atw-card';card.id='atw-card-'+i;card.innerHTML=`<div class='atw-country'><span class='atw-flag'>${c.flag}</span>${c.name}</div><div class='atw-city'>${c.city}</div><div class='atw-time' id='atw-time-${i}'>--:--:--</div><div class='atw-date' id='atw-date-${i}'></div>`;atwGrid.appendChild(card)});
+list.forEach((c,i)=>{const card=document.createElement('div');card.className='atw-card';card.id='atw-card-'+i;const isActive=headerTz===c.tz;card.innerHTML=`<div class='atw-country'><span class='atw-flag'>${c.flag}</span>${c.name}</div><div class='atw-city'>${c.city}</div><div class='atw-time' id='atw-time-${i}'>--:--:--</div><div class='atw-date' id='atw-date-${i}'></div><button class="atw-set-btn${isActive?' active':''}" data-tz="${c.tz}" data-label="${c.flag} ${c.name}">${isActive?'RESET':'SET'}</button>`;card.querySelector('.atw-set-btn').onclick=function(){if(isActive){setHeaderTime(null,'')}else{setHeaderTime(c.tz,c.flag+' '+c.name)}};atwGrid.appendChild(card)});
 atwSelect.innerHTML='<option value="">Jump to country...</option>'+filtered.map((c,i)=>`<option value="${i}">${c.flag} ${c.name}</option>`).join('')}
 function atwUpdateTimes(){
 if(!africaTimePanelOpen)return;
