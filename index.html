@@ -123,7 +123,7 @@ a{color:#00ffee;text-decoration:none}
 <div id='africaTimeWidget'>
 <h2>African Time</h2>
 <div class='atw-toggle-container'>
-<input id='atwSearchBox' type='text' placeholder='Search country or capital...' />
+<input id='atwSearchBox' type='text' placeholder='Search country or capital...' autocomplete='off' />
 <select id='atwHourFormat' style='width:auto'>
 <option value='auto'>Auto Format</option>
 <option value='12'>12-hour</option>
@@ -163,7 +163,7 @@ function setHeaderTime(tz,label,iso){headerTz=tz;headerTzLabel=label;headerTzIso
 
 let africaTimePanelOpen=false,africaTimeHideTimer=null;
 function toggleAfricaTime(){const p=document.getElementById('africaTimePanel');if(africaTimePanelOpen){p.classList.remove('open');africaTimePanelOpen=false}else{p.classList.add('open');africaTimePanelOpen=true;atwRender();atwUpdateTimes()}}
-function scheduleAfricaTimeHide(){africaTimeHideTimer=setTimeout(()=>{document.getElementById('africaTimePanel').classList.remove('open');africaTimePanelOpen=false},300)}
+function scheduleAfricaTimeHide(){africaTimeHideTimer=setTimeout(()=>{document.getElementById('africaTimePanel').classList.remove('open');africaTimePanelOpen=false},600)}
 function clearAfricaTimeHide(){if(africaTimeHideTimer){clearTimeout(africaTimeHideTimer);africaTimeHideTimer=null}}
 const atwAllCities=[
 {iso:"dz",name:"Algeria",city:"Algiers",tz:"Africa/Algiers"},
@@ -233,7 +233,7 @@ function atwRender(){
 const filtered=atwGetFiltered();
 const list=atwShowAll?filtered:filtered.slice(0,atwTopCount);
 atwGrid.innerHTML='';
-list.forEach((c,i)=>{const card=document.createElement('div');card.className='atw-card';card.id='atw-card-'+i;const isActive=headerTz===c.tz;card.innerHTML=`<div class='atw-country'><span class='atw-flag'>${atwFlagImg(c.iso)}</span>${c.name}</div><div class='atw-city'>${c.city}</div><div class='atw-time' id='atw-time-${i}'>--:--:--</div><div class='atw-date' id='atw-date-${i}'></div><button class="atw-set-btn${isActive?' active':''}" data-tz="${c.tz}" data-iso="${c.iso}">${isActive?'RESET':'SET'}</button>`;card.querySelector('.atw-set-btn').onclick=function(){if(isActive){setHeaderTime(null,'','')}else{setHeaderTime(c.tz,c.name,c.iso)}};atwGrid.appendChild(card)});
+list.forEach((c,i)=>{const card=document.createElement('div');card.className='atw-card';card.id='atw-card-'+i;const isActive=headerTz===c.tz;card.innerHTML=`<div class='atw-country'><span class='atw-flag'>${atwFlagImg(c.iso)}</span>${c.name}</div><div class='atw-city'>${c.city}</div><div class='atw-time' id='atw-time-${i}'>--:--:--</div><div class='atw-date' id='atw-date-${i}'></div><div style='display:flex;gap:6px;margin-top:6px'><button class="atw-set-btn${isActive?' active':''}" data-tz="${c.tz}" data-iso="${c.iso}">${isActive?'RESET':'SET'}</button><button class="atw-set-btn" onclick="atwViewCountry('${c.name.replace(/'/g,"\\'")}','${c.iso}')">VIEW</button></div>`;card.querySelector('.atw-set-btn').onclick=function(){if(isActive){setHeaderTime(null,'','')}else{setHeaderTime(c.tz,c.name,c.iso)}};atwGrid.appendChild(card)});
 atwSelect.innerHTML='<option value="">Jump to country...</option>'+filtered.map((c,i)=>`<option value="${i}">${c.name}</option>`).join('')}
 function atwUpdateTimes(){
 if(!africaTimePanelOpen)return;
@@ -246,6 +246,49 @@ atwToggleBtn.addEventListener('click',()=>{atwShowAll=!atwShowAll;atwToggleBtn.t
 atwSelect.addEventListener('change',()=>{const idx=atwSelect.value;if(idx!==''){let card=document.getElementById('atw-card-'+idx);if(!card){atwShowAll=true;atwToggleBtn.textContent='Collapse List';atwRender();atwUpdateTimes();card=document.getElementById('atw-card-'+idx)}if(card){card.classList.add('highlight');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('highlight'),2000)}}});
 atwHourFormat.addEventListener('change',atwUpdateTimes);
 document.addEventListener('click',function(e){const panel=document.getElementById('africaTimePanel');const clock=document.getElementById('gmtClock');if(africaTimePanelOpen&&!panel.contains(e.target)&&!clock.contains(e.target)){panel.classList.remove('open');africaTimePanelOpen=false}});
+async function atwViewCountry(name,iso){
+const w=document.getElementById('africaTimeWidget');
+w.innerHTML=`<div style='text-align:center;padding:40px;color:#00ffee;font-family:Share Tech Mono,monospace'>Loading ${name}...</div>`;
+try{
+const r=await fetch('https://restcountries.com/v3.1/name/'+encodeURIComponent(name)+'?fullText=true');
+const d=await r.json();
+if(!d||!d.length)throw new Error('Not found');
+const c=d[0];
+const flag=c.flags?c.flags.png:'';
+const region=c.region||'N/A';
+const subregion=c.subregion||'N/A';
+const capital=c.capital?c.capital[0]:'N/A';
+const code=(c.idd&&c.idd.root?c.idd.root:'')+(c.idd&&c.idd.suffixes?c.idd.suffixes[0]:'');
+const pop=c.population?c.population.toLocaleString():'N/A';
+const area=c.area?c.area.toLocaleString()+' km²':'N/A';
+const curr=c.currencies?Object.values(c.currencies)[0]:{};
+const currName=curr.name||'N/A';
+const currTicker=c.currencies?Object.keys(c.currencies)[0]:'N/A';
+const lang=c.languages?Object.values(c.languages).join(', '):'N/A';
+const coords=c.latlng||[];
+const gmap=coords.length?`https://www.google.com/maps/search/?q=${coords[0]},${coords[1]}`:`https://www.google.com/maps/search/?q=${capital}`;
+const passIdx=`https://www.passportindex.org/passport/${name.toLowerCase().replace(/ /g,'-')}/`;
+let exRate='N/A';
+try{const er=await fetch('https://api.exchangerate-api.com/v4/latest/USD');const ed=await er.json();if(ed.rates&&ed.rates[currTicker])exRate=ed.rates[currTicker].toFixed(2)}catch(e){}
+const mapEmbed=coords.length?`<iframe src='https://maps.google.com/maps?q=${coords[0]},${coords[1]}&z=5&output=embed' style='width:100%;height:250px;border:none;border-radius:8px;margin-top:12px'></iframe>`:'';
+w.innerHTML=`<div style='padding:12px'>
+<button class='atw-small-button' onclick='atwRender();atwUpdateTimes()' style='margin-bottom:16px'>⬅ BACK</button>
+<div style='display:flex;align-items:center;gap:12px;margin-bottom:16px'><img src='${flag}' style='width:60px;border-radius:4px'><div><h2 style='margin:0;color:#00ffee;font-family:Share Tech Mono,monospace'>${name}</h2><div style='color:#7fd6df;font-size:13px'>${region} — ${subregion}</div></div></div>
+<div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;font-family:Rajdhani,sans-serif;font-size:14px'>
+<div><span style='color:#7fd6df'>Capital:</span> ${capital}</div>
+<div><span style='color:#7fd6df'>Calling Code:</span> ${code}</div>
+<div><span style='color:#7fd6df'>Language:</span> ${lang}</div>
+<div><span style='color:#7fd6df'>Population:</span> ${pop}</div>
+<div><span style='color:#7fd6df'>Area:</span> ${area}</div>
+<div><span style='color:#7fd6df'>Currency:</span> ${currName} (${currTicker})</div>
+<div><span style='color:#7fd6df'>Exchange Rate (USD):</span> ${exRate}</div>
+<div><a href='${gmap}' target='_blank' style='color:#00ffee;text-decoration:none'>📍 Google Maps</a></div>
+<div><a href='https://www.visaopenness.org/' target='_blank' style='color:#00ffee;text-decoration:none'>🛂 Visa Openness Index</a></div>
+<div><a href='${passIdx}' target='_blank' style='color:#00ffee;text-decoration:none'>🛃 Passport Index</a></div>
+</div>
+${mapEmbed}
+</div>`;
+}catch(e){w.innerHTML=`<div style='padding:20px'><button class='atw-small-button' onclick='atwRender();atwUpdateTimes()'>⬅ BACK</button><div style='text-align:center;color:#ff4444;padding:20px'>Failed to load country data.</div></div>`}}
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.startsWith('http://')))return'#';return esc(s).replace(/'/g,'&#39;')}
 let full=false,idx=0;
@@ -365,7 +408,7 @@ function loadConflict(){active('mapBtn');renderOps(`
 <button class='command-btn' onclick=\"setConflict('drcongo')\">DR CONGO</button><br><br>
 <button class='command-btn' onclick=\"setConflict('ethiopia')\">ETHIOPIA</button><br><br>
 <button class='command-btn' onclick=\"setConflict('somalia')\">SOMALIA</button>
-`,`<iframe class='map-frame' src='https://iran.liveuamap.com/'></iframe>`)}
+`,`<iframe class='map-frame' src='https://drcongo.liveuamap.com/'></iframe>`)}
 function setMarine(z){const f={hormuz:'https://www.marinetraffic.com/en/ais/embed/zoom:6/centery:25.9/centerx:57.6/maptype:4',bab:'https://www.marinetraffic.com/en/ais/embed/zoom:6/centery:12.6/centerx:43.3/maptype:4',suez:'https://www.marinetraffic.com/en/ais/embed/zoom:7/centery:30.5/centerx:32.3/maptype:4',bosporus:'https://www.marinetraffic.com/en/ais/embed/zoom:8/centery:41/centerx:29/maptype:4',malacca:'https://www.marinetraffic.com/en/ais/embed/zoom:5/centery:3.5/centerx:100.5/maptype:4',panama:'https://www.marinetraffic.com/en/ais/embed/zoom:8/centery:9.1/centerx:-79.7/maptype:4',gibraltar:'https://www.marinetraffic.com/en/ais/embed/zoom:8/centery:36/centerx:-5.5/maptype:4'};document.getElementById('marineFrame').innerHTML=`<iframe class='map-frame' src='${f[z]}'></iframe>`}
 function loadMarine(){active('marineBtn');renderOps(`
 <button class='command-btn' onclick=\"setMarine('hormuz')\">HORMUZ</button><br><br>
