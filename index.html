@@ -118,7 +118,7 @@ a{color:#00ffee;text-decoration:none}
 <button id='marketsBtn' class='command-btn'>MARKETS</button>
 </div>
 <div id='gmtClock' onclick='toggleAfricaTime()'></div>
-<div id='gmtClockFlag' style='text-align:center;font-size:28px;line-height:1;display:none'></div>
+<div id='gmtClockFlag' style='text-align:center;font-size:28px;line-height:1;display:none;cursor:pointer' onclick='openCountryView()'></div>
 <div id='africaTimePanel' onmouseenter='clearAfricaTimeHide()' onmouseleave='scheduleAfricaTimeHide()'>
 <div id='africaTimeWidget'>
 <h2>African Time</h2>
@@ -165,6 +165,7 @@ let africaTimePanelOpen=false,africaTimeHideTimer=null;
 function toggleAfricaTime(){const p=document.getElementById('africaTimePanel');if(africaTimePanelOpen){p.classList.remove('open');africaTimePanelOpen=false}else{p.classList.add('open');africaTimePanelOpen=true;atwRender();atwUpdateTimes()}}
 function scheduleAfricaTimeHide(){africaTimeHideTimer=setTimeout(()=>{document.getElementById('africaTimePanel').classList.remove('open');africaTimePanelOpen=false},600)}
 function clearAfricaTimeHide(){if(africaTimeHideTimer){clearTimeout(africaTimeHideTimer);africaTimeHideTimer=null}}
+function openCountryView(){if(!headerTzLabel)return;const p=document.getElementById('africaTimePanel');if(!africaTimePanelOpen){p.classList.add('open');africaTimePanelOpen=true}atwViewCountry(headerTzLabel,headerTzIso)}
 const atwAllCities=[
 {iso:"dz",name:"Algeria",city:"Algiers",tz:"Africa/Algiers"},
 {iso:"ao",name:"Angola",city:"Luanda",tz:"Africa/Luanda"},
