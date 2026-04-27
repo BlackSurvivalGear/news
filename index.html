@@ -25,7 +25,26 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 .command-btn.active{background:#0c2430;box-shadow:0 0 14px #00ffee77,0 0 28px #00ffee44,0 0 42px #00ffee22;border-color:#00ffeedd;text-shadow:0 0 6px #00ffee}
 .drawer-toggle:hover{box-shadow:0 0 18px #00ffee88,0 0 36px #00ffee44;text-shadow:0 0 8px #00ffee;transform:translateY(-1px)}
 .channel:hover{background:#0c2430!important;box-shadow:0 0 12px #00ffee66;text-shadow:0 0 8px #00ffee;color:#00ffee}
-#gmtClock{text-align:center;color:#00ffee;width:100%}
+#gmtClock{text-align:center;color:#00ffee;width:100%;cursor:pointer;user-select:none}
+#gmtClock:hover{text-shadow:0 0 8px #00ffee}
+#africaTimePanel{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);z-index:10000;width:min(960px,92vw);max-height:80vh;overflow-y:auto;border-radius:12px;box-shadow:0 8px 40px rgba(0,255,238,0.15),0 0 1px #00ffee44}
+#africaTimePanel.open{display:block}
+#africaTimeWidget{font-family:"Segoe UI",system-ui,sans-serif;background:#0e1628;color:#f1f5f9;border-radius:12px;padding:16px;box-sizing:border-box}
+#africaTimeWidget h2{text-align:center;color:#ffb703;margin-bottom:10px;margin-top:0}
+#africaTimeWidget input,#africaTimeWidget select{width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#fff;box-sizing:border-box}
+.atw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.atw-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px;transition:0.3s;cursor:default}
+.atw-card:hover{border-color:#ffb703;box-shadow:0 0 15px rgba(255,183,3,0.3)}
+.atw-card.highlight{border-color:#ffb703;box-shadow:0 0 25px rgba(255,183,3,0.9);transform:scale(1.05)}
+.atw-flag{font-size:20px;margin-right:8px}
+.atw-country{font-weight:bold;margin-bottom:4px;display:flex;align-items:center}
+.atw-city{font-size:14px;margin-bottom:8px;color:#94a3b8}
+.atw-time{font-family:'Courier New',monospace;font-size:20px;color:#ffb703;font-weight:bold}
+.atw-date{color:#94a3b8;font-size:13px;margin-top:4px}
+.atw-toggle-container{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+.atw-small-button{background:#ffb703;border:none;color:#0e1628;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold;flex-grow:1}
+.atw-small-button:hover{background:#e5a502}
+#atwSearchBox{flex-grow:3}
 .header-right{display:flex;align-items:center;gap:6px;justify-content:flex-end}
 .market-box{padding:4px 8px;text-align:center}
 .market-price{font-size:24px;color:#00ffee}
@@ -84,7 +103,7 @@ a{color:#00ffee;text-decoration:none}
 <a href='https://www.blacksurvivalgear.com/' target='_blank'><video class='radar-logo' autoplay muted loop playsinline><source src='https://blacksurvivalgear.github.io/osint/RADAR3.mp4'></video></a>
 <div><div class='callsign'>BLACK SURVIVAL GEAR</div><div class='subline'>Members</div><div class='OSINT PLATFORM-sub'>OSINT PLATFORM</div></div>
 </div>
-<div class='header-center'>
+<div class='header-center' style='position:relative'>
 <div id='navBtns'>
 <button id='newsBtn' class='command-btn'>LIVE NEWS</button>
 <button id='mapBtn' class='command-btn'>CONFLICT MAP</button>
@@ -92,7 +111,23 @@ a{color:#00ffee;text-decoration:none}
 <button id='flightBtn' class='command-btn'>FLIGHT WATCH</button>
 <button id='marketsBtn' class='command-btn'>MARKETS</button>
 </div>
-<div id='gmtClock'></div>
+<div id='gmtClock' onclick='toggleAfricaTime()'></div>
+<div id='africaTimePanel' onmouseenter='clearAfricaTimeHide()' onmouseleave='scheduleAfricaTimeHide()'>
+<div id='africaTimeWidget'>
+<h2>African Time</h2>
+<div class='atw-toggle-container'>
+<input id='atwSearchBox' type='text' placeholder='Search country or capital...' />
+<select id='atwHourFormat' style='width:auto'>
+<option value='auto'>Auto Format</option>
+<option value='12'>12-hour</option>
+<option value='24'>24-hour</option>
+</select>
+<button class='atw-small-button' id='atwToggleShow'>Show All Countries</button>
+</div>
+<select id='atwCountrySelect'><option value=''>Jump to country...</option></select>
+<div class='atw-grid' id='atwCityGrid'></div>
+</div>
+</div>
 </div>
 <div class='header-right'>
 <div class='market-box'><div>BRENT</div><div class='market-price' id='priceBrent'>--</div></div>
@@ -115,6 +150,94 @@ a{color:#00ffee;text-decoration:none}
 <script>
 setTimeout(()=>{let s=document.getElementById('splashScreen');s.classList.add('fade-out');setTimeout(()=>s.remove(),500)},3000);
 function updateClock(){gmtClock.textContent=new Date().toUTCString().replace('GMT','GMT / ZULU')}setInterval(updateClock,1000);updateClock();
+
+let africaTimePanelOpen=false,africaTimeHideTimer=null;
+function toggleAfricaTime(){const p=document.getElementById('africaTimePanel');if(africaTimePanelOpen){p.classList.remove('open');africaTimePanelOpen=false}else{p.classList.add('open');africaTimePanelOpen=true;atwRender();atwUpdateTimes()}}
+function scheduleAfricaTimeHide(){africaTimeHideTimer=setTimeout(()=>{document.getElementById('africaTimePanel').classList.remove('open');africaTimePanelOpen=false},300)}
+function clearAfricaTimeHide(){if(africaTimeHideTimer){clearTimeout(africaTimeHideTimer);africaTimeHideTimer=null}}
+
+(function(){
+const atwAllCities=[
+{flag:"\ud83c\udde9\ud83c\uddff",name:"Algeria",city:"Algiers",tz:"Africa/Algiers"},
+{flag:"\ud83c\udde6\ud83c\uddf4",name:"Angola",city:"Luanda",tz:"Africa/Luanda"},
+{flag:"\ud83c\udde7\ud83c\uddef",name:"Benin",city:"Porto-Novo",tz:"Africa/Porto-Novo"},
+{flag:"\ud83c\udde7\ud83c\uddfc",name:"Botswana",city:"Gaborone",tz:"Africa/Gaborone"},
+{flag:"\ud83c\udde7\ud83c\uddeb",name:"Burkina Faso",city:"Ouagadougou",tz:"Africa/Ouagadougou"},
+{flag:"\ud83c\udde7\ud83c\uddee",name:"Burundi",city:"Gitega",tz:"Africa/Bujumbura"},
+{flag:"\ud83c\udde8\ud83c\uddf2",name:"Cameroon",city:"Yaound\u00e9",tz:"Africa/Douala"},
+{flag:"\ud83c\udde8\ud83c\uddfb",name:"Cape Verde",city:"Praia",tz:"Atlantic/Cape_Verde"},
+{flag:"\ud83c\udde8\ud83c\uddeb",name:"Central African Republic",city:"Bangui",tz:"Africa/Bangui"},
+{flag:"\ud83c\uddf9\ud83c\udde9",name:"Chad",city:"N'Djamena",tz:"Africa/Ndjamena"},
+{flag:"\ud83c\uddf0\ud83c\uddf2",name:"Comoros",city:"Moroni",tz:"Indian/Comoro"},
+{flag:"\ud83c\udde8\ud83c\uddec",name:"Congo (Brazzaville)",city:"Brazzaville",tz:"Africa/Brazzaville"},
+{flag:"\ud83c\udde8\ud83c\udde9",name:"Congo (Kinshasa)",city:"Kinshasa",tz:"Africa/Kinshasa"},
+{flag:"\ud83c\udde8\ud83c\uddee",name:"C\u00f4te d'Ivoire",city:"Yamoussoukro",tz:"Africa/Abidjan"},
+{flag:"\ud83c\udde9\ud83c\uddef",name:"Djibouti",city:"Djibouti",tz:"Africa/Djibouti"},
+{flag:"\ud83c\uddea\ud83c\uddec",name:"Egypt",city:"Cairo",tz:"Africa/Cairo"},
+{flag:"\ud83c\uddec\ud83c\uddf6",name:"Equatorial Guinea",city:"Malabo",tz:"Africa/Malabo"},
+{flag:"\ud83c\uddea\ud83c\uddf7",name:"Eritrea",city:"Asmara",tz:"Africa/Asmara"},
+{flag:"\ud83c\uddf8\ud83c\uddff",name:"Eswatini",city:"Mbabane",tz:"Africa/Mbabane"},
+{flag:"\ud83c\uddea\ud83c\uddf9",name:"Ethiopia",city:"Addis Ababa",tz:"Africa/Addis_Ababa"},
+{flag:"\ud83c\uddec\ud83c\udde6",name:"Gabon",city:"Libreville",tz:"Africa/Libreville"},
+{flag:"\ud83c\uddec\ud83c\uddf2",name:"Gambia",city:"Banjul",tz:"Africa/Banjul"},
+{flag:"\ud83c\uddec\ud83c\udded",name:"Ghana",city:"Accra",tz:"Africa/Accra"},
+{flag:"\ud83c\uddec\ud83c\uddf3",name:"Guinea",city:"Conakry",tz:"Africa/Conakry"},
+{flag:"\ud83c\uddec\ud83c\uddfc",name:"Guinea-Bissau",city:"Bissau",tz:"Africa/Bissau"},
+{flag:"\ud83c\uddf0\ud83c\uddea",name:"Kenya",city:"Nairobi",tz:"Africa/Nairobi"},
+{flag:"\ud83c\uddf1\ud83c\uddf8",name:"Lesotho",city:"Maseru",tz:"Africa/Maseru"},
+{flag:"\ud83c\uddf1\ud83c\uddf7",name:"Liberia",city:"Monrovia",tz:"Africa/Monrovia"},
+{flag:"\ud83c\uddf1\ud83c\uddfe",name:"Libya",city:"Tripoli",tz:"Africa/Tripoli"},
+{flag:"\ud83c\uddf2\ud83c\uddec",name:"Madagascar",city:"Antananarivo",tz:"Indian/Antananarivo"},
+{flag:"\ud83c\uddf2\ud83c\uddfc",name:"Malawi",city:"Lilongwe",tz:"Africa/Blantyre"},
+{flag:"\ud83c\uddf2\ud83c\uddf1",name:"Mali",city:"Bamako",tz:"Africa/Bamako"},
+{flag:"\ud83c\uddf2\ud83c\uddf7",name:"Mauritania",city:"Nouakchott",tz:"Africa/Nouakchott"},
+{flag:"\ud83c\uddf2\ud83c\uddfa",name:"Mauritius",city:"Port Louis",tz:"Indian/Mauritius"},
+{flag:"\ud83c\uddf2\ud83c\udde6",name:"Morocco",city:"Rabat",tz:"Africa/Casablanca"},
+{flag:"\ud83c\uddf2\ud83c\uddff",name:"Mozambique",city:"Maputo",tz:"Africa/Maputo"},
+{flag:"\ud83c\uddf3\ud83c\udde6",name:"Namibia",city:"Windhoek",tz:"Africa/Windhoek"},
+{flag:"\ud83c\uddf3\ud83c\uddea",name:"Niger",city:"Niamey",tz:"Africa/Niamey"},
+{flag:"\ud83c\uddf3\ud83c\uddec",name:"Nigeria",city:"Abuja",tz:"Africa/Lagos"},
+{flag:"\ud83c\uddf7\ud83c\uddfc",name:"Rwanda",city:"Kigali",tz:"Africa/Kigali"},
+{flag:"\ud83c\uddf8\ud83c\uddf9",name:"S\u00e3o Tom\u00e9 and Pr\u00edncipe",city:"S\u00e3o Tom\u00e9",tz:"Africa/Sao_Tome"},
+{flag:"\ud83c\uddf8\ud83c\uddf3",name:"Senegal",city:"Dakar",tz:"Africa/Dakar"},
+{flag:"\ud83c\uddf8\ud83c\udde8",name:"Seychelles",city:"Victoria",tz:"Indian/Mahe"},
+{flag:"\ud83c\uddf8\ud83c\uddf1",name:"Sierra Leone",city:"Freetown",tz:"Africa/Freetown"},
+{flag:"\ud83c\uddf8\ud83c\uddf4",name:"Somalia",city:"Mogadishu",tz:"Africa/Mogadishu"},
+{flag:"\ud83c\uddff\ud83c\udde6",name:"South Africa",city:"Pretoria",tz:"Africa/Johannesburg"},
+{flag:"\ud83c\uddf8\ud83c\uddf8",name:"South Sudan",city:"Juba",tz:"Africa/Juba"},
+{flag:"\ud83c\uddf8\ud83c\udde9",name:"Sudan",city:"Khartoum",tz:"Africa/Khartoum"},
+{flag:"\ud83c\uddf9\ud83c\uddff",name:"Tanzania",city:"Dodoma",tz:"Africa/Dar_es_Salaam"},
+{flag:"\ud83c\uddf9\ud83c\uddec",name:"Togo",city:"Lom\u00e9",tz:"Africa/Lome"},
+{flag:"\ud83c\uddf9\ud83c\uddf3",name:"Tunisia",city:"Tunis",tz:"Africa/Tunis"},
+{flag:"\ud83c\uddfa\ud83c\uddec",name:"Uganda",city:"Kampala",tz:"Africa/Kampala"},
+{flag:"\ud83c\uddff\ud83c\uddf2",name:"Zambia",city:"Lusaka",tz:"Africa/Lusaka"},
+{flag:"\ud83c\uddff\ud83c\uddfc",name:"Zimbabwe",city:"Harare",tz:"Africa/Harare"}
+];
+let atwShowAll=false;const atwTopCount=8;
+const atwGrid=document.getElementById('atwCityGrid');
+const atwSearchBox=document.getElementById('atwSearchBox');
+const atwSelect=document.getElementById('atwCountrySelect');
+const atwToggleBtn=document.getElementById('atwToggleShow');
+const atwHourFormat=document.getElementById('atwHourFormat');
+function atwGetFiltered(){const q=atwSearchBox.value.toLowerCase();return atwAllCities.filter(c=>c.name.toLowerCase().includes(q)||c.city.toLowerCase().includes(q))}
+function atwRender(){
+const filtered=atwGetFiltered();
+const list=atwShowAll?filtered:filtered.slice(0,atwTopCount);
+atwGrid.innerHTML='';
+list.forEach((c,i)=>{const card=document.createElement('div');card.className='atw-card';card.id='atw-card-'+i;card.innerHTML=`<div class='atw-country'><span class='atw-flag'>${c.flag}</span>${c.name}</div><div class='atw-city'>${c.city}</div><div class='atw-time' id='atw-time-${i}'>--:--:--</div><div class='atw-date' id='atw-date-${i}'></div>`;atwGrid.appendChild(card)});
+atwSelect.innerHTML='<option value="">Jump to country...</option>'+filtered.map((c,i)=>`<option value="${i}">${c.flag} ${c.name}</option>`).join('')}
+function atwUpdateTimes(){
+if(!africaTimePanelOpen)return;
+const now=new Date();const fv=atwHourFormat.value;const h12=fv==='auto'?undefined:(fv==='12');
+const filtered=atwGetFiltered();const list=atwShowAll?filtered:filtered.slice(0,atwTopCount);
+list.forEach((c,i)=>{const te=document.getElementById('atw-time-'+i);const de=document.getElementById('atw-date-'+i);if(te&&de){try{te.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:c.tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:h12}).format(now);de.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:c.tz,weekday:'short',month:'short',day:'numeric'}).format(now)}catch(e){te.textContent='Error'}}})}
+setInterval(atwUpdateTimes,1000);
+atwSearchBox.addEventListener('input',()=>{atwRender();atwUpdateTimes()});
+atwToggleBtn.addEventListener('click',()=>{atwShowAll=!atwShowAll;atwToggleBtn.textContent=atwShowAll?'Collapse List':'Show All Countries';atwRender();atwUpdateTimes()});
+atwSelect.addEventListener('change',()=>{const idx=atwSelect.value;if(idx!==''){const card=document.getElementById('atw-card-'+idx);if(card){card.classList.add('highlight');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('highlight'),2000)}}});
+atwHourFormat.addEventListener('change',atwUpdateTimes);
+document.addEventListener('click',function(e){const panel=document.getElementById('africaTimePanel');const clock=document.getElementById('gmtClock');if(africaTimePanelOpen&&!panel.contains(e.target)&&!clock.contains(e.target)){panel.classList.remove('open');africaTimePanelOpen=false}});
+})();
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.startsWith('http://')))return'#';return esc(s).replace(/'/g,'&#39;')}
 let full=false,idx=0;
