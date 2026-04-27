@@ -223,11 +223,12 @@ const atwAllCities=[
 ];
 function atwFlagImg(iso,size){return `<img src='https://flagcdn.com/w40/${iso}.png' alt='' style='width:${size||20}px;height:auto;vertical-align:middle;border-radius:2px'>`}
 let atwShowAll=false;const atwTopCount=8;
-const atwGrid=document.getElementById('atwCityGrid');
-const atwSearchBox=document.getElementById('atwSearchBox');
-const atwSelect=document.getElementById('atwCountrySelect');
-const atwToggleBtn=document.getElementById('atwToggleShow');
-const atwHourFormat=document.getElementById('atwHourFormat');
+let atwGrid=document.getElementById('atwCityGrid');
+let atwSearchBox=document.getElementById('atwSearchBox');
+let atwSelect=document.getElementById('atwCountrySelect');
+let atwToggleBtn=document.getElementById('atwToggleShow');
+let atwHourFormat=document.getElementById('atwHourFormat');
+const atwOriginalHTML=document.getElementById('africaTimeWidget').innerHTML;
 function atwGetFiltered(){const q=atwSearchBox.value.toLowerCase();return atwAllCities.filter(c=>c.name.toLowerCase().includes(q)||c.city.toLowerCase().includes(q))}
 function atwRender(){
 const filtered=atwGetFiltered();
@@ -246,6 +247,19 @@ atwToggleBtn.addEventListener('click',()=>{atwShowAll=!atwShowAll;atwToggleBtn.t
 atwSelect.addEventListener('change',()=>{const idx=atwSelect.value;if(idx!==''){let card=document.getElementById('atw-card-'+idx);if(!card){atwShowAll=true;atwToggleBtn.textContent='Collapse List';atwRender();atwUpdateTimes();card=document.getElementById('atw-card-'+idx)}if(card){card.classList.add('highlight');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('highlight'),2000)}}});
 atwHourFormat.addEventListener('change',atwUpdateTimes);
 document.addEventListener('click',function(e){const panel=document.getElementById('africaTimePanel');const clock=document.getElementById('gmtClock');if(africaTimePanelOpen&&!panel.contains(e.target)&&!clock.contains(e.target)){panel.classList.remove('open');africaTimePanelOpen=false}});
+function atwRestoreWidget(){
+const w=document.getElementById('africaTimeWidget');
+w.innerHTML=atwOriginalHTML;
+atwGrid=document.getElementById('atwCityGrid');
+atwSearchBox=document.getElementById('atwSearchBox');
+atwSelect=document.getElementById('atwCountrySelect');
+atwToggleBtn=document.getElementById('atwToggleShow');
+atwHourFormat=document.getElementById('atwHourFormat');
+atwSearchBox.addEventListener('input',()=>{atwRender();atwUpdateTimes()});
+atwToggleBtn.addEventListener('click',()=>{atwShowAll=!atwShowAll;atwToggleBtn.textContent=atwShowAll?'Collapse List':'Show All Countries';atwRender();atwUpdateTimes()});
+atwSelect.addEventListener('change',()=>{const idx=atwSelect.value;if(idx!==''){let card=document.getElementById('atw-card-'+idx);if(!card){atwShowAll=true;atwToggleBtn.textContent='Collapse List';atwRender();atwUpdateTimes();card=document.getElementById('atw-card-'+idx)}if(card){card.classList.add('highlight');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('highlight'),2000)}}});
+atwHourFormat.addEventListener('change',atwUpdateTimes);
+atwRender();atwUpdateTimes()}
 async function atwViewCountry(name,iso){
 const w=document.getElementById('africaTimeWidget');
 w.innerHTML=`<div style='text-align:center;padding:40px;color:#00ffee;font-family:Share Tech Mono,monospace'>Loading ${name}...</div>`;
@@ -272,7 +286,7 @@ let exRate='N/A';
 try{const er=await fetch('https://api.exchangerate-api.com/v4/latest/USD');const ed=await er.json();if(ed.rates&&ed.rates[currTicker])exRate=ed.rates[currTicker].toFixed(2)}catch(e){}
 const mapEmbed=coords.length?`<iframe src='https://maps.google.com/maps?q=${coords[0]},${coords[1]}&z=5&output=embed' style='width:100%;height:250px;border:none;border-radius:8px;margin-top:12px'></iframe>`:'';
 w.innerHTML=`<div style='padding:12px'>
-<button class='atw-small-button' onclick='atwRender();atwUpdateTimes()' style='margin-bottom:16px'>⬅ BACK</button>
+<button class='atw-small-button' onclick='atwRestoreWidget()' style='margin-bottom:16px'>⬅ BACK</button>
 <div style='display:flex;align-items:center;gap:12px;margin-bottom:16px'><img src='${flag}' style='width:60px;border-radius:4px'><div><h2 style='margin:0;color:#00ffee;font-family:Share Tech Mono,monospace'>${name}</h2><div style='color:#7fd6df;font-size:13px'>${region} — ${subregion}</div></div></div>
 <div style='display:grid;grid-template-columns:1fr 1fr;gap:8px;font-family:Rajdhani,sans-serif;font-size:14px'>
 <div><span style='color:#7fd6df'>Capital:</span> ${capital}</div>
@@ -288,7 +302,7 @@ w.innerHTML=`<div style='padding:12px'>
 </div>
 ${mapEmbed}
 </div>`;
-}catch(e){w.innerHTML=`<div style='padding:20px'><button class='atw-small-button' onclick='atwRender();atwUpdateTimes()'>⬅ BACK</button><div style='text-align:center;color:#ff4444;padding:20px'>Failed to load country data.</div></div>`}}
+}catch(e){w.innerHTML=`<div style='padding:20px'><button class='atw-small-button' onclick='atwRestoreWidget()'>⬅ BACK</button><div style='text-align:center;color:#ff4444;padding:20px'>Failed to load country data.</div></div>`}}
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.startsWith('http://')))return'#';return esc(s).replace(/'/g,'&#39;')}
 let full=false,idx=0;
