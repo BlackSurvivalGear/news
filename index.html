@@ -29,21 +29,21 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 #gmtClock:hover{text-shadow:0 0 8px #00ffee}
 #africaTimePanel{display:none;position:absolute;top:100%;left:50%;transform:translateX(-50%);z-index:10000;width:min(960px,92vw);max-height:80vh;overflow-y:auto;border-radius:12px;box-shadow:0 8px 40px rgba(0,255,238,0.15),0 0 1px #00ffee44}
 #africaTimePanel.open{display:block}
-#africaTimeWidget{font-family:"Segoe UI",system-ui,sans-serif;background:#0e1628;color:#f1f5f9;border-radius:12px;padding:16px;box-sizing:border-box}
-#africaTimeWidget h2{text-align:center;color:#ffb703;margin-bottom:10px;margin-top:0}
-#africaTimeWidget input,#africaTimeWidget select{width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#fff;box-sizing:border-box}
+#africaTimeWidget{font-family:Rajdhani,sans-serif;background:#061018;color:#f1f5f9;border-radius:12px;padding:16px;box-sizing:border-box;border:1px solid #00ffee44}
+#africaTimeWidget h2{text-align:center;color:#00ffee;margin-bottom:10px;margin-top:0;font-family:'Share Tech Mono',monospace;letter-spacing:2px;text-shadow:0 0 10px #00ffee88}
+#africaTimeWidget input,#africaTimeWidget select{width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #00ffee44;background:#081821;color:#00ffee;box-sizing:border-box;font-family:'Share Tech Mono',monospace}
 .atw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.atw-card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:12px;transition:0.3s;cursor:default}
-.atw-card:hover{border-color:#ffb703;box-shadow:0 0 15px rgba(255,183,3,0.3)}
-.atw-card.highlight{border-color:#ffb703;box-shadow:0 0 25px rgba(255,183,3,0.9);transform:scale(1.05)}
+.atw-card{background:#081821;border:1px solid #00ffee33;border-radius:10px;padding:12px;transition:0.3s;cursor:default}
+.atw-card:hover{border-color:#00ffee;box-shadow:0 0 15px rgba(0,255,238,0.3)}
+.atw-card.highlight{border-color:#00ffee;box-shadow:0 0 25px rgba(0,255,238,0.9);transform:scale(1.05)}
 .atw-flag{font-size:20px;margin-right:8px}
 .atw-country{font-weight:bold;margin-bottom:4px;display:flex;align-items:center}
-.atw-city{font-size:14px;margin-bottom:8px;color:#94a3b8}
-.atw-time{font-family:'Courier New',monospace;font-size:20px;color:#ffb703;font-weight:bold}
-.atw-date{color:#94a3b8;font-size:13px;margin-top:4px}
+.atw-city{font-size:14px;margin-bottom:8px;color:#7fd6df}
+.atw-time{font-family:'Share Tech Mono',monospace;font-size:20px;color:#00ffee;font-weight:bold;text-shadow:0 0 6px #00ffee88}
+.atw-date{color:#7fd6df;font-size:13px;margin-top:4px}
 .atw-toggle-container{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
-.atw-small-button{background:#ffb703;border:none;color:#0e1628;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold;flex-grow:1}
-.atw-small-button:hover{background:#e5a502}
+.atw-small-button{background:#081821;border:1px solid #00ffee66;color:#00ffee;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:bold;flex-grow:1;font-family:'Share Tech Mono',monospace;transition:background 0.15s,box-shadow 0.15s,text-shadow 0.15s}
+.atw-small-button:hover{background:#0c2430;box-shadow:0 0 18px #00ffee88;text-shadow:0 0 8px #00ffee}
 #atwSearchBox{flex-grow:3}
 .header-right{display:flex;align-items:center;gap:6px;justify-content:flex-end}
 .market-box{padding:4px 8px;text-align:center}
@@ -155,8 +155,6 @@ let africaTimePanelOpen=false,africaTimeHideTimer=null;
 function toggleAfricaTime(){const p=document.getElementById('africaTimePanel');if(africaTimePanelOpen){p.classList.remove('open');africaTimePanelOpen=false}else{p.classList.add('open');africaTimePanelOpen=true;atwRender();atwUpdateTimes()}}
 function scheduleAfricaTimeHide(){africaTimeHideTimer=setTimeout(()=>{document.getElementById('africaTimePanel').classList.remove('open');africaTimePanelOpen=false},300)}
 function clearAfricaTimeHide(){if(africaTimeHideTimer){clearTimeout(africaTimeHideTimer);africaTimeHideTimer=null}}
-
-(function(){
 const atwAllCities=[
 {flag:"\ud83c\udde9\ud83c\uddff",name:"Algeria",city:"Algiers",tz:"Africa/Algiers"},
 {flag:"\ud83c\udde6\ud83c\uddf4",name:"Angola",city:"Luanda",tz:"Africa/Luanda"},
@@ -234,10 +232,9 @@ list.forEach((c,i)=>{const te=document.getElementById('atw-time-'+i);const de=do
 setInterval(atwUpdateTimes,1000);
 atwSearchBox.addEventListener('input',()=>{atwRender();atwUpdateTimes()});
 atwToggleBtn.addEventListener('click',()=>{atwShowAll=!atwShowAll;atwToggleBtn.textContent=atwShowAll?'Collapse List':'Show All Countries';atwRender();atwUpdateTimes()});
-atwSelect.addEventListener('change',()=>{const idx=atwSelect.value;if(idx!==''){const card=document.getElementById('atw-card-'+idx);if(card){card.classList.add('highlight');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('highlight'),2000)}}});
+atwSelect.addEventListener('change',()=>{const idx=atwSelect.value;if(idx!==''){let card=document.getElementById('atw-card-'+idx);if(!card){atwShowAll=true;atwToggleBtn.textContent='Collapse List';atwRender();atwUpdateTimes();card=document.getElementById('atw-card-'+idx)}if(card){card.classList.add('highlight');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('highlight'),2000)}}});
 atwHourFormat.addEventListener('change',atwUpdateTimes);
 document.addEventListener('click',function(e){const panel=document.getElementById('africaTimePanel');const clock=document.getElementById('gmtClock');if(africaTimePanelOpen&&!panel.contains(e.target)&&!clock.contains(e.target)){panel.classList.remove('open');africaTimePanelOpen=false}});
-})();
 function esc(s){let d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function safeHref(u){let s=String(u).trim();if(!(s.startsWith('https://')||s.startsWith('http://')))return'#';return esc(s).replace(/'/g,'&#39;')}
 let full=false,idx=0;
