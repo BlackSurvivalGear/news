@@ -72,9 +72,7 @@ body{background:var(--bg);color:#fff;font-family:Rajdhani,sans-serif;overflow-x:
 #opsMenu:hover,#opsMenu.open{width:280px;overflow-y:auto}
 #opsMenu .menu-content{opacity:0;pointer-events:none;transition:opacity 0.2s ease;padding:0 18px 18px}
 #opsMenu:hover .menu-content,#opsMenu.open .menu-content{opacity:1;pointer-events:auto}
-.drawer-toggle{width:100%;padding:10px;margin-bottom:0;background:#081821;border:1px solid #00ffee55;color:#00ffee;cursor:pointer;font-family:'Share Tech Mono';transition:transform 0.15s ease,box-shadow 0.15s ease,text-shadow 0.15s ease}
-.bugout-panel{max-height:0;overflow:hidden;transition:max-height 0.4s ease;background:#061018;border:1px solid #00ffee22;border-top:none;border-radius:0 0 8px 8px;margin-bottom:12px}
-.bugout-panel.open{max-height:600px;overflow-y:auto}
+.bugout-section{background:#061018;border:1px solid #00ffee22;border-radius:8px;margin-bottom:12px;padding:12px}
 .panel-trigger{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:#081821;border:none;border-bottom:1px solid #00ffee44;color:#00ffee;cursor:pointer;font-size:20px;font-family:'Share Tech Mono'}
 .panel-trigger:hover{background:#0c2430;text-shadow:0 0 8px #00ffee}
 #opsShell.fullscreen #opsMenu{display:none}
@@ -351,7 +349,7 @@ const bd=typeof bugoutData!=='undefined'?bugoutData[name]:null;
 if(bd){
 const vfList=bd.vf.map(v=>`<div style='display:flex;justify-content:space-between;padding:4px 8px;border-bottom:1px solid #00ffee11'><span>${v[0]}</span>${v[1]?`<span style='color:#00ffee;font-size:12px'>${v[1]} days</span>`:''}</div>`).join('');
 const voaList=bd.voa.map(v=>`<div style='padding:4px 8px;border-bottom:1px solid #00ffee11'>${v}</div>`).join('');
-bugoutHtml=`<div style='padding:12px'><div style='margin-bottom:16px'><div style='color:#00ffee;font-family:Share Tech Mono,monospace;font-size:14px;margin-bottom:8px;text-shadow:0 0 6px #00ffee88'>✅ VISA-FREE DESTINATIONS (${bd.vf.length})</div><div style='max-height:200px;overflow-y:auto;font-family:Rajdhani,sans-serif;font-size:13px;color:#d7ffff;background:#04090f;border-radius:6px;border:1px solid #00ffee22'>${vfList||'<div style="padding:8px;color:#7fd6df">None</div>'}</div></div><div><div style='color:#ffaa00;font-family:Share Tech Mono,monospace;font-size:14px;margin-bottom:8px;text-shadow:0 0 6px #ffaa0088'>🔶 VISA ON ARRIVAL (${bd.voa.length})</div><div style='max-height:200px;overflow-y:auto;font-family:Rajdhani,sans-serif;font-size:13px;color:#d7ffff;background:#04090f;border-radius:6px;border:1px solid #ffaa0022'>${voaList||'<div style="padding:8px;color:#7fd6df">None</div>'}</div></div><div style='margin-top:12px;text-align:center'><a href="${passIdx}" target='_blank' style='color:#00ffee;font-size:12px;font-family:Share Tech Mono,monospace'>Source: passportindex.org</a></div></div>`;
+bugoutHtml=`<div style='margin-bottom:16px'><div style='color:#00ffee;font-family:Share Tech Mono,monospace;font-size:14px;margin-bottom:8px;text-shadow:0 0 6px #00ffee88'>✅ VISA-FREE DESTINATIONS (${bd.vf.length})</div><div style='max-height:200px;overflow-y:auto;font-family:Rajdhani,sans-serif;font-size:13px;color:#d7ffff;background:#04090f;border-radius:6px;border:1px solid #00ffee22'>${vfList||'<div style="padding:8px;color:#7fd6df">None</div>'}</div></div><div><div style='color:#ffaa00;font-family:Share Tech Mono,monospace;font-size:14px;margin-bottom:8px;text-shadow:0 0 6px #ffaa0088'>🔶 VISA ON ARRIVAL (${bd.voa.length})</div><div style='max-height:200px;overflow-y:auto;font-family:Rajdhani,sans-serif;font-size:13px;color:#d7ffff;background:#04090f;border-radius:6px;border:1px solid #ffaa0022'>${voaList||'<div style="padding:8px;color:#7fd6df">None</div>'}</div></div><div style='margin-top:12px;text-align:center'><a href="${passIdx}" target='_blank' style='color:#00ffee;font-size:12px;font-family:Share Tech Mono,monospace'>Source: passportindex.org</a></div>`;
 }else{bugoutHtml='<div style="padding:16px;text-align:center;color:#7fd6df;font-family:Share Tech Mono,monospace;font-size:13px">No passport mobility data available.</div>';}
 const countryNameMap={'Algeria':'Algeria','Angola':'Angola','Benin':'Benin','Botswana':'Botswana','Burkina Faso':'BurkinaFaso','Burundi':'Burundi','Cameroon':'Cameroon','Cape Verde':'CapeVerde','Central African Republic':'CentralAfricanRepublic','Chad':'Chad','Congo (Brazzaville)':'Congo','Congo (Kinshasa)':'DRCongo',"C\u00f4te d'Ivoire":'IvoryCoast','Djibouti':'Djibouti','Egypt':'Egypt','Equatorial Guinea':'EquatorialGuinea','Eritrea':'Eritrea','Eswatini':'Eswatini','Ethiopia':'Ethiopia','Gabon':'Gabon','Gambia':'Gambia','Ghana':'Ghana','Guinea':'Guinea','Guinea-Bissau':'GuineaBissau','Kenya':'Kenya','Lesotho':'Lesotho','Liberia':'Liberia','Libya':'Libya','Madagascar':'Madagascar','Malawi':'Malawi','Mali':'Mali','Mauritania':'Mauritania','Morocco':'Morocco','Mozambique':'Mozambique','Namibia':'Namibia','Niger':'Niger','Nigeria':'Nigeria','Rwanda':'Rwanda',"S\u00e3o Tom\u00e9 and Pr\u00edncipe":'SaoTome','Senegal':'Senegal','Sierra Leone':'SierraLeone','Somalia':'Somalia','South Africa':'SouthAfrica','South Sudan':'SouthSudan','Sudan':'Sudan','Tanzania':'Tanzania','Togo':'Togo','Tunisia':'Tunisia','Uganda':'Uganda','Zambia':'Zambia','Zimbabwe':'Zimbabwe'};
 const dataKey=countryNameMap[name]||'';
@@ -375,8 +373,7 @@ w.innerHTML=`<div style='padding:12px'>
 <div><a href='${passIdx}' target='_blank' style='color:#00ffee;text-decoration:none'>🛃 Passport Index</a></div>
 </div>
 ${newsLinksHtml}
-<button class='drawer-toggle' onclick="document.getElementById('bugoutPanel').classList.toggle('open')">🛃 BUGOUT — ${name}</button>
-<div id='bugoutPanel' class='bugout-panel'>${bugoutHtml}</div>
+<div class='bugout-section'>${bugoutHtml}</div>
 ${mapEmbed}
 <div id='countryHeadlines' style='margin-top:12px'></div>
 </div>`;
